@@ -1,0 +1,14 @@
+-- Create PDB2 from PDB$SEED
+CREATE PLUGGABLE DATABASE PDB2
+ADMIN USER pdb2admin IDENTIFIED BY <PDB2_PASSWORD>
+STORAGE (MAXSIZE 5G);
+
+-- Check Open Mode of the new PDB
+SELECT OPEN_MODE FROM V$PDBS WHERE NAME = 'PDB2';
+
+-- Open the new PDB
+ALTER PLUGGABLE DATABASE PDB2 OPEN;
+
+-- Save the PDB open state so it automatically opens after
+-- the CDB is restarted.
+ALTER PLUGGABLE DATABASE PDB2 SAVE STATE;
