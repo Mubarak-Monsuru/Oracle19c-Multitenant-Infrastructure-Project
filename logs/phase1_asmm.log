@@ -1,0 +1,114 @@
+Script started on Sat 26 Sep 2026 11:10:20 PM WAT
+]0;root@pvm1:~[?1034h[root@pvm1 ~]# su - oracle
+Last login: Sat Sep 26 22:57:56 WAT 2026 on pts/0
+]0;oracle@pvm1:~[?1034h[oracle@pvm1 ~]$ free -h
+              total        used        free      shared  buff/cache   available
+Mem:           5.5G        1.1G         73M        2.3G        4.4G        2.0G
+Swap:          4.0G        524K        4.0G
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ SHOW PARAMETR[KER E[KMEMORY_TARGET
+bash: SHOW: command not found...
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ sl[K[KSHOW PARAMETER MEMORY_TARGET[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cfree -h[K[3Pexitsqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Sep 26 23:10:56 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> SHOW PARAMETER MEMORY_TARGET
+
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+memory_target			     big integer 0
+SQL> SHOW PARAMETER MEMORY_MAX_TARGET;
+
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+memory_max_target		     big integer 0
+SQL> alter     ALTER SYSTEM SET SGA_MAX_SIZE=4G   096M SCOPE=SPFILE;
+
+System altered.
+
+SQL> ALTER SYSTEM SET PGA_AGGREPGA_AGGRE                  PGA_AGGRE         PGA_AGGREGATE_LIMIT=3072M SCOPE=SPFILE;
+
+System altered.
+
+SQL> ALTER SS YSTEM SET PGA_AGGREGATE_TARGET=1536M SCOPE=SPFILE;
+
+System altered.
+
+SQL> SHUTDOWN IMMEDIATE
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+SQL> STARTUP
+ORACLE instance started.
+
+Total System Global Area 4294963960 bytes
+Fixed Size		    9143032 bytes
+Variable Size		 2214592512 bytes
+Database Buffers	 2063597568 bytes
+Redo Buffers		    7630848 bytes
+Database mounted.
+Database opened.
+SQL> ALTER SYSTEM SET SGA_TARGET=2368M SCOPE=BOTH;
+
+System altered.
+
+SQL> COL COMPONENT FOR A22
+SQL> SELECT COMPONENT, CURRENT_SIZE, USER_SPECIFIED_SIZE
+  2  FROM V$MEMORY_DYNAMIC_COMPONENTS
+  3  WHERE CURRENT_SIZE<>0;
+
+COMPONENT	       CURRENT_SIZE USER_SPECIFIED_SIZE
+---------------------- ------------ -------------------
+shared pool		  385875968		      0
+large pool		   16777216		      0
+SGA Target		 2483027968	     2483027968
+DEFAULT buffer cache	 1979711488		      0
+Shared IO Pool		   83886080	       83886080
+PGA Target		 1610612736	     1610612736
+
+6 rows selected.
+
+SQL> SHOW PARAMETER SGA_TARGET;
+SHOW PARAMETER SGA_MAX_SIZE;
+
+SHOW PARAMETER PGA_AGGREGATE_TARGET;
+SHOW PARAMETER PGA_AGGREGATE_LIMIT;
+
+SHOW PARAMETER MEMORY_TARGET;
+SHOW PARAMETER MEMORY_MAX_TARGET;
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+sga_target			     big integer 2368M
+SQL> 
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+sga_max_size			     big integer 4G
+SQL> SQL> 
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+pga_aggregate_target		     big integer 1536M
+SQL> 
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+pga_aggregate_limit		     big integer 3G
+SQL> SQL> 
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+memory_target			     big integer 0
+SQL> EXIT
+SQL> EXIT
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ exit
+logout
+]0;root@pvm1:~[root@pvm1 ~]# exit
+exit
+
+Script done on Sat 26 Sep 2026 11:23:00 PM WAT
