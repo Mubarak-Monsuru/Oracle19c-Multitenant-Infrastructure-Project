@@ -1,0 +1,612 @@
+Script started on Sat 03 Oct 2026 03:02:41 PM WAT
+]0;root@pvm1:~[?1034h[root@pvm1 ~]# su - oracle
+Last login: Sat Sep 26 23:10:25 WAT 2026 on pts/1
+]0;oracle@pvm1:~[?1034h[oracle@pvm1 ~]$ echo $TNS_ADMIN
+
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ ls -al $ORACLE_HOME/network/admin
+total 8
+drwxr-xr-x.  3 oracle oracle   39 Apr 17  2019 [0m[01;34m.[0m
+drwxr-xr-x. 10 oracle oracle 4096 Apr 17  2019 [01;34m..[0m
+drwxr-xr-x.  2 oracle oracle   64 Apr 17  2019 [01;34msamples[0m
+-rw-r--r--.  1 oracle oracle 1536 Feb 14  2018 shrept.lst
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ vi ~/.bash_profile
+[?1049h[?1h=[2;1H▽[6n[2;1H  [1;1H]11;?[1;40r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[40;1H"~/.bash_profile" 13L, 226C[>c[1;1H[34m# .bash_profile
+
+# Get the aliases and functions[m
+[33mif [[m [33m-f[m ~/.bashrc [33m][m; [33mthen
+        . [m~/.bashrc
+[33mfi[m
+
+[34m# User specific environment and startup programs[m
+
+[36mPATH[m=[35m$PATH[m:[35m$HOME[m/.local/bin:[35m$HOME[m/bin
+
+[33mexport[m[36m PATH[m
+[33m. [m/home/oracle/scripts/setEnv.sh
+[1m[34m~                                                                                                                                                             [15;1H~                                                                                                                                                             [16;1H~                                                                                                                                                             [17;1H~                                                                                                                                                             [18;1H~                                                                                                                                                             [19;1H~                                                                                                                                                             [20;1H~                                                                                                                                                             [21;1H~                                                                                                                                                             [22;1H~                                                                                                                                                             [23;1H~                                                                                                                                                             [24;1H~                                                                                                                                                             [25;1H~                                                                                                                                                             [26;1H~                                                                                                                                                             [27;1H~                                                                                                                                                             [28;1H~                                                                                                                                                             [29;1H~                                                                                                                                                             [30;1H~                                                                                                                                                             [31;1H~                                                                                                                                                             [32;1H~                                                                                                                                                             [33;1H~                                                                                                                                                             [34;1H~                                                                                                                                                             [35;1H~                                                                                                                                                             [36;1H~                                                                                                                                                             [37;1H~                                                                                                                                                             [38;1H~                                                                                                                                                             [39;1H~                                                                                                                                                             [m[40;141H1,1[11CAll[1;1H[?12l[?25h[?25l[40;1H[1m-- INSERT --[m[40;13H[K[40;141H1,1[11CAll[1;1H[?12l[?25h[40;1H[K[1;1H[?25l[40;141H1,1[11CAll[1;1H[?12l[?25h[?25l[40;141H[K[40;1H:[?12l[?25hw[?25l[?12l[?25hq[?25l[?12l[?25h[?25l".bash_profile" 13L, 226C written
+[?1l>[?12l[?25h[?1049l]0;oracle@pvm1:~[oracle@pvm1 ~]$ ^C
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ vi ~/.bash_profile
+[?1049h[?1h=[2;1H▽[6n[2;1H  [1;1H]11;?[1;40r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[40;1H"~/.bash_profile" 13L, 226C[>c[1;1H[34m# .bash_profile
+
+# Get the aliases and functions[m
+[33mif [[m [33m-f[m ~/.bashrc [33m][m; [33mthen
+        . [m~/.bashrc
+[33mfi[m
+
+[34m# User specific environment and startup programs[m
+
+[36mPATH[m=[35m$PATH[m:[35m$HOME[m/.local/bin:[35m$HOME[m/bin
+
+[33mexport[m[36m PATH[m
+[33m. [m/home/oracle/scripts/setEnv.sh
+[1m[34m~                                                                                                                                                             [15;1H~                                                                                                                                                             [16;1H~                                                                                                                                                             [17;1H~                                                                                                                                                             [18;1H~                                                                                                                                                             [19;1H~                                                                                                                                                             [20;1H~                                                                                                                                                             [21;1H~                                                                                                                                                             [22;1H~                                                                                                                                                             [23;1H~                                                                                                                                                             [24;1H~                                                                                                                                                             [25;1H~                                                                                                                                                             [26;1H~                                                                                                                                                             [27;1H~                                                                                                                                                             [28;1H~                                                                                                                                                             [29;1H~                                                                                                                                                             [30;1H~                                                                                                                                                             [31;1H~                                                                                                                                                             [32;1H~                                                                                                                                                             [33;1H~                                                                                                                                                             [34;1H~                                                                                                                                                             [35;1H~                                                                                                                                                             [36;1H~                                                                                                                                                             [37;1H~                                                                                                                                                             [38;1H~                                                                                                                                                             [39;1H~                                                                                                                                                             [m[40;141H1,1[11CAll[1;1H[?12l[?25h[?25l[40;1H[1m-- INSERT --[m[40;13H[K[40;141H1,1[11CAll[1;1H[?12l[?25h[40;1H[K[1;1H[?25l[40;141H1,1[11CAll[1;1H[?12l[?25h[?25l[40;141H[K[40;1H:[?12l[?25hw[?25l[?12l[?25hq[?25l[?12l[?25h[?25l".bash_profile" 13L, 226C written
+[?1l>[?12l[?25h[?1049l]0;oracle@pvm1:~[oracle@pvm1 ~]$ mkdir -p $ORACLE_BASE/network/admin
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ ls -ld $ORACLE_BASE/network/admin
+drwxrwxr-x. 2 oracle oracle 6 Oct  3 15:14 [0m[01;34m/u01/app/oracle/network/admin[0m
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ export TNS_ADMIN=$ORACLE_BASE/network/admin
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ source /home/oracle/scripts/setEnv.sh[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kvi /home/oracle/scripts/setEnv.sh
+[?1049h[?1h=[2;1H▽[6n[2;1H  [1;1H]11;?[1;40r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[40;1H"~/scripts/setEnv.sh" 18L, 529C[>c[1;1H[34m# Oracle Settings[m
+[33mexport[m[36m TMP=[m/tmp
+[33mexport[m[36m TMPDIR=[m[35m$TMP[m
+
+[33mexport[m[36m ORACLE_HOSTNAME=[mpvm1.localdomain
+[33mexport[m[36m ORACLE_UNQNAME=[moradbcdb
+[33mexport[m[36m ORACLE_BASE=[m/u01/app/oracle
+[33mexport[m[36m ORACLE_HOME=[m[35m$ORACLE_BASE[m/product/19.0.0/dbhome_1
+[33mexport[m[36m ORA_INVENTORY=[m/u01/app/oraInventory
+[33mexport[m[36m ORACLE_SID=[moradbcdb
+[33mexport[m[36m PDB_NAME=[mpdb1
+[33mexport[m[36m DATA_DIR=[m/u02/oradata
+
+[33mexport[m[36m PATH=[m/usr/sbin:/usr/[33mlocal[m/bin:[35m$PATH[m
+[33mexport[m[36m PATH=[m[35m$ORACLE_HOME[m/bin:[35m$PATH[m
+
+[33mexport[m[36m LD_LIBRARY_PATH=[m[35m$ORACLE_HOME[m/lib:/lib:/usr/lib
+[33mexport[m[36m CLASSPATH=[m[35m$ORACLE_HOME[m/jlib:[35m$ORACLE_HOME[m/rdbms/jlib
+[1m[34m~                                                                                                                                                             [20;1H~                                                                                                                                                             [21;1H~                                                                                                                                                             [22;1H~                                                                                                                                                             [23;1H~                                                                                                                                                             [24;1H~                                                                                                                                                             [25;1H~                                                                                                                                                             [26;1H~                                                                                                                                                             [27;1H~                                                                                                                                                             [28;1H~                                                                                                                                                             [29;1H~                                                                                                                                                             [30;1H~                                                                                                                                                             [31;1H~                                                                                                                                                             [32;1H~                                                                                                                                                             [33;1H~                                                                                                                                                             [34;1H~                                                                                                                                                             [35;1H~                                                                                                                                                             [36;1H~                                                                                                                                                             [37;1H~                                                                                                                                                             [38;1H~                                                                                                                                                             [39;1H~                                                                                                                                                             [m[40;141H11,1[10CAll[11;1H[?12l[?25h[?25l[40;1H[1m-- INSERT --[m[40;13H[K[40;141H11,1[10CAll[11;1H[?12l[?25h[?25l[40;142H0[10;1H[?12l[?25h[?25l[40;141H9,1 [9;1H[?12l[?25h[?25l[40;141H8[8;1H[?12l[?25h[?25l[40;141H9[9;1H[?12l[?25h[?25l[10;39r[10;1H[L[1;40r[9;1H[K[10;1H[33mexport[m[36m ORA_INVENTORY=[m/u01/app/oraInventory[40;141H[K[40;141H10,1[10CAll[10;1H[?12l[?25h[?25l[40;141H9,1 [9;1H[?12l[?25h[?25l[33mexport[m[36m TNS_ADMIN=[m[35m$ORACLE_BASE[m/network/admin[40;143H44[9;44H[?12l[?25h[40;1H[K[9;43H[?25l[40;141H9,43[10CAll[9;43H[?12l[?25h[?25l[40;141H[K[40;1H:[?12l[?25hw[?25l[?12l[?25hq[?25l[?12l[?25h[?25l"scripts/setEnv.sh" 19L, 573C written
+[?1l>[?12l[?25h[?1049l]0;oracle@pvm1:~[oracle@pvm1 ~]$ source /home/oracle/scripts/setEnv.sh
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ echo $TNS_ADMIN
+/u01/app/oracle/network/admin
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ cat $TNS_ADMIN/listener.ora
+# listener.ora Network Configuration File: /u01/app/oracle/network/admin/listener.ora
+# Generated by Oracle configuration tools.
+
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = pvm1.localdomain)(PORT = 1521))
+      (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1521))
+    )
+  )
+
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ echo[K[K[K[Kcat $TNS_ADMIN/listener.ora[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[12Pecho $TNS_ADMIN[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kcat /home/oracle/scripts/setEnv.sh
+# Oracle Settings
+export TMP=/tmp
+export TMPDIR=$TMP
+
+export ORACLE_HOSTNAME=pvm1.localdomain
+export ORACLE_UNQNAME=oradbcdb
+export ORACLE_BASE=/u01/app/oracle
+export ORACLE_HOME=$ORACLE_BASE/product/19.0.0/dbhome_1
+export TNS_ADMIN=$ORACLE_BASE/network/admin
+export ORA_INVENTORY=/u01/app/oraInventory
+export ORACLE_SID=oradbcdb
+export PDB_NAME=pdb1
+export DATA_DIR=/u02/oradata
+
+export PATH=/usr/sbin:/usr/local/bin:$PATH
+export PATH=$ORACLE_HOME/bin:$PATH
+
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/lib:/usr/lib
+export CLASSPATH=$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ su - orac[K[K[K[K[K[K[K[Kqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Oct 3 15:31:40 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Connected to an idle instance.
+
+SQL> STARTUP
+ORACLE instance started.
+
+Total System Global Area 4294963960 bytes
+Fixed Size		    9143032 bytes
+Variable Size		 2214592512 bytes
+Database Buffers	 2063597568 bytes
+Redo Buffers		    7630848 bytes
+Database mounted.
+Database opened.
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ lsnrctl status
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 03-OCT-2026 15:38:23
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=pvm1.localdomain)(PORT=1521)))
+STATUS of the LISTENER
+------------------------
+Alias                     LISTENER
+Version                   TNSLSNR for Linux: Version 19.0.0.0.0 - Production
+Start Date                03-OCT-2026 15:24:53
+Uptime                    0 days 0 hr. 13 min. 30 sec
+Trace Level               off
+Security                  ON: Local OS Authentication
+SNMP                      OFF
+Listener Parameter File   /u01/app/oracle/network/admin/listener.ora
+Listener Log File         /u01/app/oracle/diag/tnslsnr/pvm1/listener/alert/log.xml
+Listening Endpoints Summary...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=pvm1.localdomain)(PORT=1521)))
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=ipc)(KEY=EXTPROC1521)))
+Services Summary...
+Service "5c3cee1422a528d2e0636a38a8c057d3" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "5c699ee601953d9ae0636a38a8c03aa0" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "86b637b62fdf7a65e053f706e80a27ca" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "oradbcdb" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "oradbcdbXDB" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "pdb1" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "pdb2" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+The command completed successfully
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ ^C
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ ~/scripts/start_all.sh
+The Oracle base remains unchanged with value /u01/app/oracle
+Processing Database instance "oradbcdb": log file /u01/app/oracle/product/19.0.0/dbhome_1/rdbms/log/startup.log
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ SELECT NAME FROM V$SERVICES ORDER BY NAME;[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Ksqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Oct 3 15:40:32 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> SELECT NAME FROM V$SERVICES ORDER BY NAME;
+
+NAME
+----------------------------------------------------------------
+SYS$BACKGROUND
+SYS$USERS
+oradbcdb
+oradbcdbXDB
+pdb1
+pdb2
+
+6 rows selected.
+
+SQL> SHOW PARAMETER service_names;
+
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+service_names			     string	 oradbcdb
+SQL> ^C
+
+SQL> sqlplus system@//pvm1.localdomain:1521/oradbcdb
+SP2-0734: unknown command beginning "sqlplus sy..." - rest of line ignored.
+SQL> s conn system@//pvm1.localdomain:1521/oradbcdb
+SP2-0306: Invalid option.
+Usage: CONN[ECT] [{logon|/|proxy} [AS {SYSDBA|SYSOPER|SYSASM|SYSBACKUP|SYSDG|SYSKM|SYSRAC}] [edition=value]]
+where <logon> ::= <username>[/<password>][@<connect_identifier>]
+      <proxy> ::= <proxyuser>[<username>][/<password>][@<connect_identifier>]
+SQL> conn system/ABCd  cd##1234@//pvm1.localdomain:1521/oradbcdb
+Connected.
+SQL> SHOW CON_NAME;
+
+CON_NAME
+------------------------------
+CDB$ROOT
+SQL> ^C
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ ls -l $TNS_ADMIN
+total 8
+-rw-r-----. 1 oracle oracle 320 Oct  3 15:26 listener2610033PM2617.bak
+-rw-r-----. 1 oracle oracle 320 Oct  3 15:24 listener.ora
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ cat $TNS_ADMIN/listener.ora
+# listener.ora Network Configuration File: /u01/app/oracle/network/admin/listener.ora
+# Generated by Oracle configuration tools.
+
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = pvm1.localdomain)(PORT = 1521))
+      (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1521))
+    )
+  )
+
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ cat $TNS_ADMIN/listener.ora[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[11Pls -l $TNS_ADMIN
+total 12
+-rw-r-----. 1 oracle oracle 320 Oct  3 15:26 listener2610033PM2617.bak
+-rw-r-----. 1 oracle oracle 320 Oct  3 15:24 listener.ora
+-rw-r-----. 1 oracle oracle 684 Oct  3 15:49 tnsnames.ora
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ cat [K[K[K[Kls -l $TNS_ADMINcat $TNS_ADMIN/listener.ora[K[K[K[K[K[K[K[K[K[K[K[Ktnsnames.ora
+# tnsnames.ora Network Configuration File: /u01/app/oracle/network/admin/tnsnames.ora
+# Generated by Oracle configuration tools.
+
+ORADBCDB =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = pvm1.localdomain)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = ORADBCDB)
+    )
+  )
+
+PDB2 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = pvm1.localdomain)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = PDB2)
+    )
+  )
+
+PDB1 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = pvm1.localdomain)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = PDB1)
+    )
+  )
+
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ cat $TNS_ADMIN/tnsnames.ora[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[11Pls -l $TNS_ADMIN
+total 24
+-rw-r-----. 1 oracle oracle 320 Oct  3 15:26 listener2610033PM2617.bak
+-rw-r-----. 1 oracle oracle 320 Oct  3 15:51 listener2610033PM5111.bak
+-rw-r-----. 1 oracle oracle 320 Oct  3 15:24 listener.ora
+-rw-r-----. 1 oracle oracle 171 Oct  3 15:51 sqlnet.ora
+-rw-r-----. 1 oracle oracle 684 Oct  3 15:51 tnsnames2610033PM5111.bak
+-rw-r-----. 1 oracle oracle 684 Oct  3 15:49 tnsnames.ora
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ cat[K[K[Kls -l $TNS_ADMINcat $TNS_ADMIN/tnsnames.ora[K[K[K[K[K[K[K[K[K[K[K[Ksqlnet.ora
+# sqlnet.ora Network Configuration File: /u01/app/oracle/network/admin/sqlnet.ora
+# Generated by Oracle configuration tools.
+
+NAMES.DIRECTORY_PATH= (TNSNAMES, EZCONNECT)
+
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ lsnrctl servo[Kice
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 03-OCT-2026 15:53:20
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=pvm1.localdomain)(PORT=1521)))
+Services Summary...
+Service "5c3cee1422a528d2e0636a38a8c057d3" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+    Handler(s):
+      "DEDICATED" established:4 refused:0 state:ready
+         LOCAL SERVER
+Service "5c699ee601953d9ae0636a38a8c03aa0" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+    Handler(s):
+      "DEDICATED" established:4 refused:0 state:ready
+         LOCAL SERVER
+Service "86b637b62fdf7a65e053f706e80a27ca" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+    Handler(s):
+      "DEDICATED" established:4 refused:0 state:ready
+         LOCAL SERVER
+Service "oradbcdb" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+    Handler(s):
+      "DEDICATED" established:4 refused:0 state:ready
+         LOCAL SERVER
+Service "oradbcdbXDB" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+    Handler(s):
+      "D000" established:0 refused:0 current:0 max:1022 state:ready
+         DISPATCHER <machine: pvm1, pid: 19235>
+         (ADDRESS=(PROTOCOL=tcp)(HOST=pvm1.localdomain)(PORT=22953))
+Service "pdb1" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+    Handler(s):
+      "DEDICATED" established:4 refused:0 state:ready
+         LOCAL SERVER
+Service "pdb2" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+    Handler(s):
+      "DEDICATED" established:4 refused:0 state:ready
+         LOCAL SERVER
+The command completed successfully
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ sqlplus[K[K[K[K[K[K[Ksqlplus system@oracdb
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Oct 3 15:56:30 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter password: 
+ERROR:
+ORA-12154: TNS:could not resolve the connect identifier specified
+
+
+Enter user-name: system
+Enter password: 
+Last Successful login time: Sat Oct 03 2026 15:49:46 +01:00
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> SHOW USER
+USER is "SYSTEM"
+SQL> conn hr@pdb1
+Enter password: 
+Connected.
+SQL> SHOW USER
+USER is "HR"
+SQL> SHOW CON_NAME    ID CON_NAME
+
+CON_ID
+------------------------------
+3
+
+CON_NAME
+------------------------------
+PDB1
+SQL> conn hr@pdb2
+Enter password: 
+Connected.
+SQL> SHOW USER
+USER is "HR"
+SQL> SHOW CON_ID CON_NAME
+
+CON_ID
+------------------------------
+4
+
+CON_NAME
+------------------------------
+PDB2
+SQL> conn /     sys   / as ssy  ysdba
+Connected.
+SQL> SHOW CON_ID CON_NAME
+
+CON_ID
+------------------------------
+1
+
+CON_NAME
+------------------------------
+CDB$ROOT
+SQL> SHOW USER
+USER is "SYS"
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ vi $TNS_ADMIN/tnsnames.ora
+[?1049h[?1h=[2;1H▽[6n[2;1H  [1;1H]11;?[1;40r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[40;1H"/u01/app/oracle/network/admin/tnsnames.ora" 33L, 684C[>c[1;1H[34m# tnsnames.ora Network Configuration File: /u01/app/oracle/network/admin/tnsnames.ora
+# Generated by Oracle configuration tools.[m
+
+ORADBCDB =
+  ([32mDESCRIPTION[m =
+    ([32mADDRESS_LIST[m =[7;7H([32mADDRESS[m = ([33mPROTOCOL[m = [33mTCP[m)([33mHOST[m = pvm1.localdomain)([33mPORT[m = 1521))
+    )
+    ([32mCONNECT_DATA[m =[10;7H([33mSERVICE_NAME[m = ORADBCDB)
+    )
+  )
+
+PDB2 =
+  ([32mDESCRIPTION[m =
+    ([32mADDRESS_LIST[m =[17;7H([32mADDRESS[m = ([33mPROTOCOL[m = [33mTCP[m)([33mHOST[m = pvm1.localdomain)([33mPORT[m = 1521))
+    )
+    ([32mCONNECT_DATA[m =[20;7H([33mSERVICE_NAME[m = PDB2)
+    )
+  )
+
+PDB1 =
+  ([32mDESCRIPTION[m =
+    ([32mADDRESS_LIST[m =[27;7H([32mADDRESS[m = ([33mPROTOCOL[m = [33mTCP[m)([33mHOST[m = pvm1.localdomain)([33mPORT[m = 1521))
+    )
+    ([32mCONNECT_DATA[m =[30;7H([33mSERVICE_NAME[m = PDB1)
+    )
+  )
+
+[1m[34m~                                                                                                                                                             [35;1H~                                                                                                                                                             [36;1H~                                                                                                                                                             [37;1H~                                                                                                                                                             [38;1H~                                                                                                                                                             [39;1H~                                                                                                                                                             [m[40;141H1,1[11CAll[1;1H[?12l[?25h[?25l[40;1H[1m-- INSERT --[m[40;13H[K[40;141H1,1[11CAll[1;1H[?12l[?25h[?25l[40;141H2[2;1H[?12l[?25h[?25l[40;141H4[4;1H[?12l[?25h[?25l[40;141H5[5;1H[?12l[?25h[?25l[40;141H6[6;1H[?12l[?25h[?25l[40;141H8[8;1H[?12l[?25h[?25l[40;141H10,1[10;1H[?12l[?25h[?25l[40;142H1[11;1H[?12l[?25h[?25l[40;142H2[12;1H[?12l[?25h[?25l[40;142H3[13;1H[?12l[?25h[?25l[40;142H4[14;1H[?12l[?25h[?25l[40;144H2[14;2H[?12l[?25h[?25l[40;144H3[14;3H[?12l[?25h[?25l[40;144H4[14;4H[?12l[?25h[?25l =[14;6H[K[14;4H[?12l[?25h[?25l1 =[40;144H5[14;5H[?12l[?25h[?25l[40;142H5[15;5H[?12l[?25h[?25l
+    [46m([18;5H)[m[40;142H6[16;5H[?12l[?25h[?25l([18;5H)[40;142H7[17;5H[?12l[?25h[?25l[16;5H[46m([18;5H)[m[40;142H8[18;5H[?12l[?25h[?25l[40;144H6[18;6H[?12l[?25h[?25l[16;5H([18;5H)
+    [46m([21;5H)[m[40;142H9[19;6H[?12l[?25h[?25l([21;5H)[40;144H7[19;7H[?12l[?25h[?25l[40;144H8[19;8H[?12l[?25h[?25l[20;7H[46m([19C)[m[40;141H20[20;8H[?12l[?25h[?25l[19;5H[46m([m[20;7H([19C)
+    [46m)[m[40;142H1,6[21;6H[?12l[?25h[?25l[19;5H([21;5H)[40;142H0[20;6H[?12l[?25h[?25l[19;5H[46m([21;5H)[m[40;141H19[19;6H[?12l[?25h[?25l[16;5H[46m([18;5H)[m
+    ([21;5H)[40;142H8[18;6H[?12l[?25h[?25l[16;5H([18;5H)[40;142H7[17;6H[?12l[?25h[?25l[16;5H[46m([18;5H)[m[40;142H6[16;6H[?12l[?25h[?25l([18;5H)[40;142H5[15;6H[?12l[?25h[?25l[40;142H4[14;6H[?12l[?25h[?25l[40;144H5[14;5H[?12l[?25h[?25l[40;144H4[14;4H[?12l[?25h[?25l =[14;6H[K[14;4H[?12l[?25h[?25l2 =[40;144H5[14;5H[?12l[?25h[?25l[40;142H5[15;5H[?12l[?25h[?25l
+    [46m([18;5H)[m[40;142H6[16;5H[?12l[?25h[?25l([18;5H)[40;142H7[17;5H[?12l[?25h[?25l[16;5H[46m([18;5H)[m[40;142H8[18;5H[?12l[?25h[?25l[16;5H([18;5H)
+    [46m([21;5H)[m[40;142H9[19;5H[?12l[?25h[?25l([21;5H)[40;141H20[20;5H[?12l[?25h[?25l[19;5H[46m([21;5H)[m[40;142H1[21;5H[?12l[?25h[?25l[15;3H[46m([m[19;5H([21;5H)
+  [46m)[m[40;142H2,4[22;4H[?12l[?25h[?25l[15;3H([22;3H)[40;142H3,1[23;1H[?12l[?25h[?25l[40;142H4,4[24;4H[?12l[?25h[?25l
+  [46m([32;3H)[m[40;142H5[25;4H[?12l[?25h[?25l([32;3H)[40;142H6[26;4H[?12l[?25h[?25l[40;142H7[27;4H[?12l[?25h[?25l[40;142H8[28;4H[?12l[?25h[?25l[40;142H9[29;4H[?12l[?25h[?25l[40;141H30[30;4H[?12l[?25h[?25l[40;142H1[31;4H[?12l[?25h[?25l[25;3H[46m([32;3H)[m[40;142H2[32;4H[?12l[?25h[?25l[25;3H([32;3H)[40;142H3,1[33;1H[?12l[?25h[?25l[34;1H[K[40;142H4[34;1H[?12l[?25h[?25l[1;39r[1;1H[3M[1;40r[31;1HPDB1 =
+  ([32mDESCRIPTION[m =[32;17H[K[33;1H    ([32mADDRESS_LIST[m =[33;20H[K[34;1H      ([32mADDRESS[m = ([33mPROTOCOL[m = [33mTCP[m)([33mHOST[m = pvm1.localdomain)([33mPORT[m = 1521))[34;73H[K[35;1H    )[35;6H[K[36;1H    ([32mCONNECT_DATA[m =[36;20H[K[37;7H([33mSERVICE_NAME[m = PDB1)
+    )
+  )[40;141H[K[40;141H42,4[10CBot[32;3H[46m([39;3H)[?12l[?25h[?25l[m[32;3H([39;3H)[40;142H1[38;4H[?12l[?25h[?25l[40;142H0[37;4H[?12l[?25h[?25l[40;141H39[36;4H[?12l[?25h[?25l[40;142H8[35;4H[?12l[?25h[?25l[40;142H9[36;4H[?12l[?25h[?25l[40;141H40[37;4H[?12l[?25h[?25l[40;144H5[37;5H[?12l[?25h[?25l[40;144H6[37;6H[?12l[?25h[?25l [46m([19C)[m[40;144H7[37;7H[?12l[?25h[?25l[40;144H8[37;8H[?12l[?25h[?25l([19C)[40;144H9[37;9H[?12l[?25h[?25l[40;144H11[37;11H[?12l[?25h[?25l[40;145H2[37;12H[?12l[?25h[?25l[40;145H3[37;13H[?12l[?25h[?25l[40;145H4[37;14H[?12l[?25h[?25l[40;145H6[37;16H[?12l[?25h[?25l[40;145H7[37;17H[?12l[?25h[?25l[40;145H9[37;19H[?12l[?25h[?25l[40;144H21[37;21H[?12l[?25h[?25l[40;145H2[37;22H[?12l[?25h[?25l[40;145H3[37;23H[?12l[?25h[?25l[40;145H4[37;24H[?12l[?25h[?25l[40;145H5[37;25H[?12l[?25h[?25l[40;145H6[37;26H[?12l[?25h[?25l)[37;27H[K[37;7H[46m([18C)[?12l[?25h[?25l[m)[46m )[m[37;26H[K[40;145H5[37;25H[?12l[?25h[?25l)[46m )[m[37;25H[K[40;145H4[37;24H[?12l[?25h[?25l)[46m )[m[37;24H[K[40;145H3[37;23H[?12l[?25h[?25l[46mO[m)O[46m)[m[40;145H4[37;24H[?12l[?25h[?25l[46mR[m)R[46m)[m[40;145H5[37;25H[?12l[?25h[?25l[46mA[m)A[46m)[m[40;145H6[37;26H[?12l[?25h[?25l[46mW[m)W[46m)[m[40;145H7[37;27H[?12l[?25h[?25l[46mI[m)I[46m)[m[40;145H8[37;28H[?12l[?25h[?25l[46mN[m)N[46m)[m[40;145H9[37;29H[?12l[?25h[?25l[46mD[m)D[46m)[m[40;144H30[37;30H[?12l[?25h[?25l[46mB[m)B[46m)[m[40;145H1[37;31H[?12l[?25h[?25l[37;7H([23C)[40;141H39,20[36;20H[?12l[?25h[?25l[33;5H[46m([35;5H)[m[40;142H8,6 [35;6H[?12l[?25h[?25l[33;5H([35;5H)[40;142H7[34;6H[?12l[?25h[?25l[33;5H[46m([35;5H)[m[40;142H6[33;6H[?12l[?25h[?25l([35;5H)[40;142H5[32;6H[?12l[?25h[?25l[40;142H4[31;6H[?12l[?25h[?25l[40;144H5[31;5H[?12l[?25h[?25l[40;144H4[31;4H[?12l[?25h[?25l1 =[31;6H[K[40;144H3[31;3H[?12l[?25h[?25l =[31;5H[K[31;3H[?12l[?25h[?25l =[31;4H[K[40;144H2[31;2H[?12l[?25h[?25l =[31;3H[K[40;144H1[31;1H[?12l[?25h[?25lO =[40;144H2[31;2H[?12l[?25h[?25lR =[40;144H3[31;3H[?12l[?25h[?25lA =[40;144H4[31;4H[?12l[?25h[?25lW =[40;144H5[31;5H[?12l[?25h[?25lI =[40;144H6[31;6H[?12l[?25h[?25lN =[40;144H7[31;7H[?12l[?25h[?25lD =[40;144H8[31;8H[?12l[?25h[?25lB =[40;144H9[31;9H[?12l[?25h[?25l[40;144H10[31;10H[?12l[?25h[?25l[40;145H1[31;11H[?12l[?25h[?25l[40;142H5[32;11H[?12l[?25h[?25l[40;145H2[32;12H[?12l[?25h[?25l[40;142H6[33;12H[?12l[?25h[?25l[40;145H3[33;13H[?12l[?25h[?25l[40;145H4[33;14H[?12l[?25h[?25l[40;145H5[33;15H[?12l[?25h[?25l[40;145H7[33;17H[?12l[?25h[?25l[40;145H9[33;19H[?12l[?25h[?25l[40;144H20[33;20H[?12l[?25h[?25l[40;142H7[34;20H[?12l[?25h[?25l[40;145H1[34;21H[?12l[?25h[?25l[40;145H2[34;22H[?12l[?25h[?25l[40;145H3[34;23H[?12l[?25h[?25l[40;145H5[34;25H[?12l[?25h[?25l[40;145H6[34;26H[?12l[?25h[?25l[40;145H8[34;28H[?12l[?25h[?25l[40;145H9[34;29H[?12l[?25h[?25l[40;144H30[34;30H[?12l[?25h[?25l[40;145H2[34;32H[?12l[?25h[?25l[2C[46m([23C)[m
+    [1m[37m[41m)[39;3H)[m[40;145H4[34;34H[?12l[?25h[?25l[40;145H5[34;35H[?12l[?25h[?25l([23C)[40;145H7[34;37H[?12l[?25h[?25l[40;145H8[34;38H[?12l[?25h[?25l[40;144H40[34;40H[?12l[?25h[?25l[40;145H1[34;41H[?12l[?25h[?25l[40;145H2[34;42H[?12l[?25h[?25lvm1.localdomain)([33mPORT[m = 1521)[34;72H[K[34;42H[?12l[?25h[?25lm1.localdomain)([33mPORT[m = 1521)[34;71H[K[34;42H[?12l[?25h[?25l1.localdomain)([33mPORT[m = 1521)[34;70H[K[34;42H[?12l[?25h[?25l.localdomain)([33mPORT[m = 1521)[34;69H[K[34;42H[?12l[?25h[?25llocaldomain)([33mPORT[m = 1521)[34;68H[K[34;42H[?12l[?25h[?25localdomain)([33mPORT[m = 1521)[34;67H[K[34;42H[?12l[?25h[?25lcaldomain)([33mPORT[m = 1521)[34;66H[K[34;42H[?12l[?25h[?25laldomain)([33mPORT[m = 1521)[34;65H[K[34;42H[?12l[?25h[?25lldomain)([33mPORT[m = 1521)[34;64H[K[34;42H[?12l[?25h[?25l[32mdomain[m)([33mPORT[m = 1521)[34;63H[K[34;42H[?12l[?25h[?25lomain)([33mPORT[m = 1521)[34;62H[K[34;42H[?12l[?25h[?25lmain)([33mPORT[m = 1521)[34;61H[K[34;42H[?12l[?25h[?25lain)([33mPORT[m = 1521)[34;60H[K[34;42H[?12l[?25h[?25lin)([33mPORT[m = 1521)[34;59H[K[34;42H[?12l[?25h[?25ln)([33mPORT[m = 1521)[34;58H[K[34;42H[?12l[?25h[?25l)([33mPORT[m = 1521)[34;57H[K[34;34H[46m([7C)[?12l[?25h[?25lw[m)([33mPORT[m = 1521))[34;42Hw[46m)[m[40;145H3[34;43H[?12l[?25h[?25l[46mi[m)([33mPORT[m = 1521))[34;43Hi[46m)[m[40;145H4[34;44H[?12l[?25h[?25l[46mn[m)([33mPORT[m = 1521))[34;44Hn[46m)[m[40;145H5[34;45H[?12l[?25h[?25l[46ms[m)([33mPORT[m = 1521))[34;45Hs[46m)[m[40;145H6[34;46H[?12l[?25h[?25l[46mr[m)([33mPORT[m = 1521))[34;46Hr[46m)[m[40;145H7[34;47H[?12l[?25h[?25l[46mv[m)([33mPORT[m = 1521))[34;47Hv[46m)[m[40;145H8[34;48H[?12l[?25h[?25l[33;5H[46m([m[34;34H([13C)
+    [46m)[m[39;3H)[40;142H8,6 [35;6H[?12l[?25h[?25l[33;5H([35;5H)
+    [46m([38;5H)[m[40;142H9[36;6H[?12l[?25h[?25l([38;5H)[40;141H40[37;6H[?12l[?25h[?25l[36;5H[46m([38;5H)[m[40;142H1[38;6H[?12l[?25h[?25l[32;3H[46m([m[36;5H([38;5H)
+  [46m)[m[40;142H2,4[39;4H[?12l[?25h[40;1H[K[39;3H[?25l[40;141H42,3[10CBot[39;3H[?12l[?25h[?25l[40;141H[K[40;1H:[?12l[?25hw[?25l[?12l[?25hq[?25l[?12l[?25h[?25l"/u01/app/oracle/network/admin/tnsnames.ora" 42L, 863C written
+[?1l>[?12l[?25h[?1049l]0;oracle@pvm1:~[oracle@pvm1 ~]$ vi $TNS_ADMIN/tnsnames.ora[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[5Psqlplus system@oracdb[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[6Plsnrctl servicecat $TNS_ADMIN/sqlnet.ora[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[9Pls -l $TNS_ADMINcat $TNS_ADMIN/tnsnames.ora[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[11Pls -l $TNS_ADMINcat $TNS_ADMIN/sqlnet.ora[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kvi $TNS_ADMIN/sqlnet.ora
+[?1049h[?1h=[2;1H▽[6n[2;1H  [1;1H]11;?[1;40r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[40;1H"/u01/app/oracle/network/admin/sqlnet.ora" 5L, 171C[>c[1;1H[34m# sqlnet.ora Network Configuration File: /u01/app/oracle/network/admin/sqlnet.ora
+# Generated by Oracle configuration tools.[m
+
+[32mNAMES[m.[33mDIRECTORY_PATH[m= ([36mTNSNAMES[m, EZCONNECT)
+
+[1m[34m~                                                                                                                                                             [7;1H~                                                                                                                                                             [8;1H~                                                                                                                                                             [9;1H~                                                                                                                                                             [10;1H~                                                                                                                                                             [11;1H~                                                                                                                                                             [12;1H~                                                                                                                                                             [13;1H~                                                                                                                                                             [14;1H~                                                                                                                                                             [15;1H~                                                                                                                                                             [16;1H~                                                                                                                                                             [17;1H~                                                                                                                                                             [18;1H~                                                                                                                                                             [19;1H~                                                                                                                                                             [20;1H~                                                                                                                                                             [21;1H~                                                                                                                                                             [22;1H~                                                                                                                                                             [23;1H~                                                                                                                                                             [24;1H~                                                                                                                                                             [25;1H~                                                                                                                                                             [26;1H~                                                                                                                                                             [27;1H~                                                                                                                                                             [28;1H~                                                                                                                                                             [29;1H~                                                                                                                                                             [30;1H~                                                                                                                                                             [31;1H~                                                                                                                                                             [32;1H~                                                                                                                                                             [33;1H~                                                                                                                                                             [34;1H~                                                                                                                                                             [35;1H~                                                                                                                                                             [36;1H~                                                                                                                                                             [37;1H~                                                                                                                                                             [38;1H~                                                                                                                                                             [39;1H~                                                                                                                                                             [m[40;141H1,1[11CAll[1;1H[?12l[?25h[?25l[40;1H[1m-- INSERT --[m[40;13H[K[40;141H1,1[11CAll[1;1H[?12l[?25h[40;1H[K[1;1H[?25l[40;141H1,1[11CAll[1;1H[?12l[?25h[?25l[40;141H[K[40;1H:[?12l[?25hw[?25l[?12l[?25hq[?25l[?12l[?25h[?25l"/u01/app/oracle/network/admin/sqlnet.ora" 5L, 171C written
+[?1l>[?12l[?25h[?1049l]0;oracle@pvm1:~[oracle@pvm1 ~]$ vi $TNS_ADMIN/listener.ora
+[?1049h[?1h=[2;1H▽[6n[2;1H  [1;1H]11;?[1;40r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[40;1H"/u01/app/oracle/network/admin/listener.ora" 11L, 320C[>c[1;1H[34m# listener.ora Network Configuration File: /u01/app/oracle/network/admin/listener.ora
+# Generated by Oracle configuration tools.[m
+
+LISTENER =
+  ([32mDESCRIPTION_LIST[m =
+    ([32mDESCRIPTION[m =[7;7H([32mADDRESS[m = ([33mPROTOCOL[m = [33mTCP[m)([33mHOST[m = pvm1.localdomain)([33mPORT[m = 1521))[8;7H([32mADDRESS[m = ([33mPROTOCOL[m = [36mIPC[m)([33mKEY[m = EXTPROC1521))
+    )
+  )
+
+[1m[34m~                                                                                                                                                             [13;1H~                                                                                                                                                             [14;1H~                                                                                                                                                             [15;1H~                                                                                                                                                             [16;1H~                                                                                                                                                             [17;1H~                                                                                                                                                             [18;1H~                                                                                                                                                             [19;1H~                                                                                                                                                             [20;1H~                                                                                                                                                             [21;1H~                                                                                                                                                             [22;1H~                                                                                                                                                             [23;1H~                                                                                                                                                             [24;1H~                                                                                                                                                             [25;1H~                                                                                                                                                             [26;1H~                                                                                                                                                             [27;1H~                                                                                                                                                             [28;1H~                                                                                                                                                             [29;1H~                                                                                                                                                             [30;1H~                                                                                                                                                             [31;1H~                                                                                                                                                             [32;1H~                                                                                                                                                             [33;1H~                                                                                                                                                             [34;1H~                                                                                                                                                             [35;1H~                                                                                                                                                             [36;1H~                                                                                                                                                             [37;1H~                                                                                                                                                             [38;1H~                                                                                                                                                             [39;1H~                                                                                                                                                             [m[40;141H1,1[11CAll[1;1H[?12l[?25h[?25l[40;1H[1m-- INSERT --[m[40;13H[K[40;141H1,1[11CAll[1;1H[?12l[?25h[?25l[40;141H2[2;1H[?12l[?25h[?25l[40;141H3[3;1H[?12l[?25h[?25l[40;141H4[4;1H[?12l[?25h[?25l[40;141H5[5;1H[?12l[?25h[?25l[40;141H6[6;1H[?12l[?25h[?25l[40;141H7[7;1H[?12l[?25h[?25l[40;141H8[8;1H[?12l[?25h[?25l[40;141H9[9;1H[?12l[?25h[?25l[40;141H8[8;1H[?12l[?25h[?25l[40;143H2[8;2H[?12l[?25h[?25l[40;143H3[8;3H[?12l[?25h[?25l[40;143H4[8;4H[?12l[?25h[?25l[40;143H5[8;5H[?12l[?25h[?25l  [46m([45C)[m[40;143H7[8;7H[?12l[?25h[?25l[40;143H8[8;8H[?12l[?25h[?25l([45C)[40;143H9[8;9H[?12l[?25h[?25l[40;143H10[8;10H[?12l[?25h[?25l[40;144H1[8;11H[?12l[?25h[?25l[40;144H2[8;12H[?12l[?25h[?25l[40;144H4[8;14H[?12l[?25h[?25l[40;144H5[8;15H[?12l[?25h[?25l[40;144H7[8;17H[?12l[?25h[?25l [46m([14C)[m[40;144H8[8;18H[?12l[?25h[?25l[40;144H9[8;19H[?12l[?25h[?25l([14C)[40;143H20[8;20H[?12l[?25h[?25l[40;144H2[8;22H[?12l[?25h[?25l[40;144H4[8;24H[?12l[?25h[?25l[40;144H5[8;25H[?12l[?25h[?25l[40;144H7[8;27H[?12l[?25h[?25l[40;144H8[8;28H[?12l[?25h[?25l[40;143H30[8;30H[?12l[?25h[?25l[40;144H2[8;32H[?12l[?25h[?25l[2C[46m([17C)[m[40;144H4[8;34H[?12l[?25h[?25l([17C)[40;144H6[8;36H[?12l[?25h[?25l[40;144H7[8;37H[?12l[?25h[?25l[40;144H8[8;38H[?12l[?25h[?25l[40;144H9[8;39H[?12l[?25h[?25l[40;143H41[8;41H[?12l[?25h[?25l[40;144H3[8;43H[?12l[?25h[?25l[40;144H4[8;44H[?12l[?25h[?25l[40;144H5[8;45H[?12l[?25h[?25l[40;144H6[8;46H[?12l[?25h[?25l[40;144H8[8;48H[?12l[?25h[?25l[40;144H9[8;49H[?12l[?25h[?25l[40;143H50[8;50H[?12l[?25h[?25l[40;144H1[8;51H[?12l[?25h[?25l[8;34H[46m([17C)[m[40;144H2[8;52H[?12l[?25h[?25l[8;7H[46m([m[26C([17C)[46m)[m[40;144H3[8;53H[?12l[?25h[?25l[40;144H4[8;54H[?12l[?25h[?25l[8;53H[K[8;7H([26C[46m([17C)[m[40;144H3[8;53H[?12l[?25h[?25l[8;52H[K[8;34H([40;144H2[8;52H[?12l[?25h[?25l[8;51H[K[40;144H1[8;51H[?12l[?25h[?25l[8;50H[K[40;144H0[8;50H[?12l[?25h[?25l[8;49H[K[40;143H49[8;49H[?12l[?25h[?25l[8;47H[K[40;144H7[8;47H[?12l[?25h[?25l[8;46H[K[40;144H6[8;46H[?12l[?25h[?25l[8;45H[K[40;144H5[8;45H[?12l[?25h[?25l[8;44H[K[40;144H4[8;44H[?12l[?25h[?25l[8;42H[K[40;144H2[8;42H[?12l[?25h[?25l[8;41H[K[40;144H1[8;41H[?12l[?25h[?25l[8;39H[K[40;143H39[8;39H[?12l[?25h[?25l[40;144H8[8;38H[?12l[?25h[?25lKE[8;37H[K[40;144H7[8;37H[?12l[?25h[?25l[8;36H[K[40;144H6[8;36H[?12l[?25h[?25l[8;34H[K[8;18H[46m([14C)[m[40;144H4[8;34H[?12l[?25h[?25l[8;33H[K[8;18H([40;144H3[8;33H[?12l[?25h[?25lI[8;31H[K[40;144H1[8;31H[?12l[?25h[?25l[8;30H[K[40;144H0[8;30H[?12l[?25h[?25l[8;28H[K[40;143H28[8;28H[?12l[?25h[?25l[8;19HPROTOCO[8;26H[K[40;144H6[8;26H[?12l[?25h[?25l[8;25H[K[40;144H5[8;25H[?12l[?25h[?25l[8;24H[K[40;144H4[8;24H[?12l[?25h[?25l[8;23H[K[40;144H3[8;23H[?12l[?25h[?25l[8;21H[K[40;144H1[8;21H[?12l[?25h[?25l[8;20H[K[40;144H0[8;20H[?12l[?25h[?25l[8;19H[K[8;18H[46m(
+[m    [46m)[m[40;143H19[8;19H[?12l[?25h[?25l[8;18H[K[9;5H)[40;144H8[8;18H[?12l[?25h[?25l[40;144H7[8;17H[?12l[?25h[?25l[8;16H[K[40;144H6[8;16H[?12l[?25h[?25l[40;144H5[8;15H[?12l[?25h[?25l[8;8HADDRES[8;14H[K[40;144H4[8;14H[?12l[?25h[?25l[8;13H[K[40;144H3[8;13H[?12l[?25h[?25l[8;12H[K[40;144H2[8;12H[?12l[?25h[?25l[8;11H[K[40;144H1[8;11H[?12l[?25h[?25l[8;10H[K[40;144H0[8;10H[?12l[?25h[?25l[8;9H[K[40;143H9 [8;9H[?12l[?25h[?25l[8;8H[K[8;7H[46m(
+[m    [46m)[m[40;143H8[8;8H[?12l[?25h[?25l[8;7H[K[9;5H)[40;143H7[8;7H[?12l[?25h[?25l[40;143H6[8;6H[?12l[?25h[?25l[40;143H5[8;5H[?12l[?25h[?25l[40;143H4[8;4H[?12l[?25h[?25l[40;143H3[8;3H[?12l[?25h[?25l[40;143H2[8;2H[?12l[?25h[?25l[40;143H1[8;1H[?12l[?25h[?25l[7;39r[39;1H
+[1;40r[7;7H([32mADDRESS[m = ([33mPROTOCOL[m = [33mTCP[m)([33mHOST[m = pvm1.localdomain)([33mPORT[m = 1521))[39;1H[1m[34m~                                                                                                                                                             [m[40;141H[K[40;141H7,73[10CAll[7;7H[46m([64C)[?12l[?25h[m[40;1H[K[7;72H[?25l[40;141H7,72[10CAll[7;72H[?12l[?25h[?25l[40;141H[K[40;1H:[?12l[?25hw[?25l[?12l[?25hq[?25l[?12l[?25h[?25l"/u01/app/oracle/network/admin/listener.ora" 10L, 266C written
+[?1l>[?12l[?25h[?1049l]0;oracle@pvm1:~[oracle@pvm1 ~]$ lsnrctl reload
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 03-OCT-2026 16:05:22
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=pvm1.localdomain)(PORT=1521)))
+The command completed successfully
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ lsnrctl reload[K[K[K[K[K[Kstatus
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 03-OCT-2026 16:05:32
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=pvm1.localdomain)(PORT=1521)))
+STATUS of the LISTENER
+------------------------
+Alias                     LISTENER
+Version                   TNSLSNR for Linux: Version 19.0.0.0.0 - Production
+Start Date                03-OCT-2026 15:24:53
+Uptime                    0 days 0 hr. 40 min. 39 sec
+Trace Level               off
+Security                  ON: Local OS Authentication
+SNMP                      OFF
+Listener Parameter File   /u01/app/oracle/network/admin/listener.ora
+Listener Log File         /u01/app/oracle/diag/tnslsnr/pvm1/listener/alert/log.xml
+Listening Endpoints Summary...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=pvm1.localdomain)(PORT=1521)))
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=ipc)(KEY=EXTPROC1521)))
+Services Summary...
+Service "5c3cee1422a528d2e0636a38a8c057d3" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "5c699ee601953d9ae0636a38a8c03aa0" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "86b637b62fdf7a65e053f706e80a27ca" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "oradbcdb" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "oradbcdbXDB" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "pdb1" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+Service "pdb2" has 1 instance(s).
+  Instance "oradbcdb", status READY, has 1 handler(s) for this service...
+The command completed successfully
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Oct 3 16:08:38 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ sqlplus system/ABcd##1234@ORAWINDB[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K@ORAWINDB
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Oct 3 16:09:51 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter password: 
+ERROR:
+ORA-12543: TNS:destination host unreachable
+
+
+Enter user-name: system
+Enter password: 
+Last Successful login time: Sat Oct 03 2026 15:56:50 +01:00
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> exit    exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Oct 3 16:12:50 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> ALTER SESSION SET CONTAINER=pdb1;
+
+Session altered.
+
+SQL> show parameter DB_CREATE_FILE_DEST
+
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+db_create_file_dest		     string	 /u02/oradata
+SQL> ALTER SESSION SET CONTAINER=pdb2;
+
+Session altered.
+
+SQL> show parameter DB_CREATE_FILE_DEST
+
+NAME				     TYPE	 VALUE
+------------------------------------ ----------- ------------------------------
+db_create_file_dest		     string	 /u02/oradata
+SQL> ^C
+
+SQL> 
+Message from syslogd@pvm1 at Oct  3 16:41:16 ...
+ kernel:watchdog: BUG: soft lockup - CPU#0 stuck for 55s! [swapper/0:0]
+
+Message from syslogd@pvm1 at Oct  3 16:41:16 ...
+ kernel:watchdog: BUG: soft lockup - CPU#1 stuck for 56s! [gnome-shell:10921]
+
+Message from syslogd@pvm1 at Oct  3 16:42:14 ...
+ kernel:watchdog: BUG: soft lockup - CPU#0 stuck for 21s! [swapper/0:0]
+
+Message from syslogd@pvm1 at Oct  3 16:43:04 ...
+ kernel:watchdog: BUG: soft lockup - CPU#0 stuck for 24s! [swapper/0:0]
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Oct 3 16:47:51 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+]0;oracle@pvm1:~[oracle@pvm1 ~]$ exit
+logout
+]0;root@pvm1:~[root@pvm1 ~]# exit
+exit
+
+Script done on Sat 03 Oct 2026 04:57:55 PM WAT
