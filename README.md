@@ -37,7 +37,7 @@ This project involves deploying a multi-tier enterprise database architecture. T
 ## 3. Project Tasks Breakdown
 
 ### 3.1 Phase 1: Database Creation, Storage & Memory Architecture (1Z0-082)
-◆ Install Oracle Database 19c software on Oracle Linux 7: Oracle Database 19c was installed on Oracle Linux 7 by following the [Oracle Database 19c Installation On Oracle Linux 7 (OL7)](https://oracle-base.com/articles/19c/oracle-db-19c-installation-on-oracle-linux-7) documentation. The complete execution log for the Oracle software installation and database creation process is available in the [Execution log](https://raw.githubusercontent.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/refs/heads/main/phase1_install.log). 
+◆ Install Oracle Database 19c software on Oracle Linux 7: Oracle Database 19c was installed on Oracle Linux 7 by following the [Oracle Database 19c Installation On Oracle Linux 7 (OL7)](https://oracle-base.com/articles/19c/oracle-db-19c-installation-on-oracle-linux-7) documentation. The complete execution log for the Oracle software installation and database creation process is available in the [Execution log](https://raw.githubusercontent.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/refs/heads/main/logs/phase1_install.log). 
 
 ![Oracle Linux Installation](.png/Oracle_Linux_Installation_2.png)
 **Figure 1:** Oracle Linux Installation
