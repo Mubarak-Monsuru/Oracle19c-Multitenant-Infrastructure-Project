@@ -59,14 +59,25 @@ The SQL scripts used to create and configure the PDB are maintained in the proje
 
 ◆ Configure Automatic Shared Memory Management (ASMM), tuning `SGA_TARGET` and `PGA_AGGREGATE_TARGET` parameters: Approximately 70% of the VM's 5.5 GB physical memory was designated for Oracle memory management. This allocation was divided approximately 60/40 between the SGA and PGA, resulting in an SGA_TARGET of 2368 MB and a PGA_AGGREGATE_TARGET of 1536 MB. MEMORY_TARGET and MEMORY_MAX_TARGET were set to 0 to use Automatic Shared Memory Management (ASMM). The [ASMM Log File](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase1_asmm.log) contains the complete configuration steps and verification output.
 
-◆ Provision `BIGFILE` tablespaces, manage datafiles, and configure undo segments for multitenant isolation.
-
 ### 3.2 Phase 2: Cross-Platform Networking & Connectivity Setup (1Z0-082)
-- [ ] Configure `listener.ora` on Oracle Linux to listen on port `1521` and accept external client requests.
-- [ ] Configure `tnsnames.ora` and `sqlnet.ora` on the Windows Workstation to map network descriptors to `oradb_cdb`, `pdb1`, and `pdb2`.
-- [ ] Configure Shared Server dispatchers on the Oracle Linux host.
-- [ ] Verify cross-platform connectivity from Windows using both SQL*Plus and SQL Developer.
-- [ ] Establish Database Links (`DBLINK`) between PDBs and execute remote cross-PDB queries.
+◆ Install Oracle Database 19c Software and Create Oracle Database on a Windows VM: Installed Oracle Database 19c Enterprise Edition on the Windows administrator host (orawindb) to serve as a cross-platform client and remote database node. To enable seamless inter-node communication and hostname resolution across operating system boundaries without relying on DNS, static host mappings were configured in Oracle Linux and on the Windows workstation.
+
+![Oracle Windows](.png/oracle_windows_installation.png)
+**Figure 5:** Successful Oracle Database 19c Installation & Instance Creation on Windows Admin Node
+
+◆ Configure Server-Side Oracle Net Listener & Naming Methods (listener.ora, tnsnames.ora, sqlnet.ora): Utilized Oracle Network Configuration Assistant (netca) in silent/interactive mode on Oracle Linux to establish server-side network infrastructure. Configured listener.ora to register local database services on TCP/IP port 1521. Configured tnsnames.ora file to initiate connection via the local naming method. Configured sqlnet.ora to prioritize naming resolution using TNSNAMES and EZCONNECT (NAMES.DIRECTORY_PATH = (TNSNAMES, EZCONNECT)). Detailed execution output and parameter verification are recorded in the [Oracle Linux Network Configuration Log](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase2_connectivity.log). 
+
+◆ Configure Client-Side Network Descriptors for CDB and PDB Service Routing: Configured client-side Net Service Names inside the Windows workstation's [tnsnames.ora file](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/network-config/tnsnames.ora). TNS aliases were explicitly defined for the Container Database (oradbcdb) and Pluggable Databases (pdb1 and pdb2) on the remote Linux host using proper service registration descriptors. Updated the client's [sqlnet.ora file](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/network-config/sqlnet.ora) to allow local and easynaming connection methods.
+
+◆ Validate Cross-Platform Inter-Database & Remote Client Connectivity via SQL*Plus: Verified end-to-end network connectivity and listener responsiveness between both operating systems. Executed SQL*Plus connection tests from Oracle Linux targeting the Windows database instance (orawindb), as well as remote connection tests from Windows to the primary Container Database (oradbcdb) and isolated Pluggable Databases (pdb1 and pdb2) on Oracle Linux.
+
+![Linux-to-Windows](.png/linux_windows.png)
+**Figure 6:** Cross-Platform Connection from Oracle Linux to Windows Database Instance (orawindb)
+
+![Windows-to-Liniux](.png/conn_to_linux.png)
+**Figure 7:** Remote SQL*Plus Client Connection from Windows to Oracle Linux CDB/PDB Service
+
+◆ Establish Database Links (`DBLINK`) between PDBs and execute remote cross-PDB queries.
 
 ### 3.3 Phase 3: Multitenant Lifecycle Operations (1Z0-082 & 1Z0-083)
 - [ ] Perform remote PDB lifecycle operations from the Windows workstation:
@@ -81,6 +92,8 @@ The SQL scripts used to create and configure the PDB are maintained in the proje
 - [ ] Design and enforce Password Profiles (failed login attempts, password lifetime, complexity rules).
 - [ ] Configure Remote Password File authentication (`orapwd`) to allow secure remote `SYSDBA` access from Windows.
 - [ ] Test and document OS-based authentication vs. password file authentication.
+
+◆ Provision `BIGFILE` tablespaces, manage datafiles, and configure undo segments for multitenant isolation.
 
 ### 3.5 Phase 5: Remote Data Ingestion & Data Pipelines (1Z0-082)
 - [ ] Prepare flat CSV data files on the Windows client workstation.

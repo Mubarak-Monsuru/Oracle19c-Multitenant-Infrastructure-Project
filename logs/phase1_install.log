@@ -5,8 +5,8 @@ drwxrwx---. 1 root vboxsf 4096 Sep 23 17:04 /media/sf_project_staging
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 
-(<IP-Address>) host.localdomain host
-[root@pvm1 ~]# ping -c 3 host
+(<IP-Address>) hostname.localdomain hostname
+[root@pvm1 ~]# ping -c 3 hostname
 PING host (<IP-Address>) 56(84) bytes of data.
 64 bytes from host (<IP-Address>): icmp_seq=1 ttl=64 time=0.071 ms
 64 bytes from host (<IP-Address>): icmp_seq=2 ttl=64 time=0.087 ms
