@@ -15,7 +15,7 @@
 ◆ **Architecture Model:** $\text{Windows Client (Admin/Dev)} \iff \text{Oracle Linux 19c Server (CDB/PDBs)}$
 
 ### 1.1 Scenario & Workflow
-This project involves deploying a multi-tier enterprise database architecture. The core database infrastructure (Container Database `oradb_cdb` and Pluggable Databases `pdb1`, `pdb2`) resides on the Oracle Linux 19c server. Administrative tasks, security policy enforcement, data ingestion pipelines, and reporting operations are executed remotely from the Windows workstation using SQL*Plus, SQL Developer, SQL*Loader, and Data Pump.
+This project involves deploying a multi-tier enterprise database architecture. The core database infrastructure (Container Database `oradbcdb` and Pluggable Databases `pdb1`, `pdb2`) resides on the Oracle Linux 19c server. Administrative tasks, security policy enforcement, data ingestion pipelines, and reporting operations are executed remotely from the Windows workstation using SQL*Plus, SQL Developer, SQL*Loader, and Data Pump.
 
 ---
 
