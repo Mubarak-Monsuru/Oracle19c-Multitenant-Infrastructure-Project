@@ -1,0 +1,240 @@
+Script started on Wed 07 Oct 2026 04:59:50 PM WAT
+[root@pvm1 ~]# su - oracle
+Last login: Tue Oct  6 21:06:52 WAT 2026 on pts/0
+[oracle@pvm1 ~]$ ~/scripts/start_all.sh
+The Oracle base remains unchanged with value /u01/app/oracle
+Processing Database instance "oradbcdb": log file /u01/app/oracle/product/19.0.0/dbhome_1/rdbms/log/startup.log
+[oracle@pvm1 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Oct 7 17:03:39 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> CREATE USER C##ORAUSER IDENTIFIED BY Password;
+
+User created.
+
+SQL> GRANT CREATE SESSION TO C##ORAUSER CONTAINER=ALL;
+
+Grant succeeded.
+
+SQL> ALTER USER C##ORAUSER SET CONTAINER_DATA=ALL CONTAINER=CURRENT;
+
+User altered.
+
+SQL> conn C##ORAUSER@pdb1
+Enter password: 
+Connected.
+SQL> SHOW USER
+USER is "C##ORAUSER"
+SQL> conn sys@pdb1 as sysdba
+Enter password: 
+Connected.
+SQL> SELECT OPEN_MODE FROM V$PDBS WHERE NAME='PDB1';
+
+OPEN_MODE
+----------
+READ WRITE
+
+SQL> GRANT DATAPUMP_EXP_FULL_DATABASE TO HR;
+
+Grant succeeded.
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+[oracle@pvm1 ~]$ exit
+logout
+[root@pvm1 ~]# ls -l /media/sf_project_staging/dump
+total 220
+-rwxrwx---. 1 root vboxsf 225280 Oct  7 18:04 hr.dmp
+[root@pvm1 ~]# su - oracle
+Last login: Wed Oct  7 17:49:08 WAT 2026 on pts/1
+[oracle@pvm1 ~]$ sqlplus system@pdb1
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Oct 7 18:08:49 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter password: 
+Last Successful login time: Wed Oct 07 2026 17:21:47 +01:00
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> CREATE TABLESPACE NXTBS DATAFILE SIZE 200M AUTOEXTEND ON NEXT 100M MAXSIZE 2G;
+
+Tablespace created.
+
+SQL> CREATE PROFILE intern_prof LIMIT
+FAILED_LOGIN_ATTEMPTS 5 
+PASSWORD_LIFE_TIME 180
+PASSWORD_REUSE_TIME 60
+PASSWORD_REUSE_MAX 3
+PASSWORD_LOCK_TIME 1/24
+PASSWORD_GRACE_TIME 5
+PASSWORD_VERIFY_FUNCTION DEFAULT
+SESSIONS_PER_USER UNLIMITED
+CPU_PER_SESSION UNLIMITED;  2    3    4    5    6    7    8    9   10  
+
+Profile created.
+
+SQL> CREATE USER pdb1_intern IDENTIFIED BY Password
+DEFAULT TABLESPACE NXTBS
+TEMPORARY TABLESPACE TEMP
+QUOTA UNLIMITED ON NXTBS
+PROFILE intern_prof;  2    3    4    5  
+
+User created.
+
+SQL> CREATE OR REPLACE DIRECTORY NEW_DIR AS '/media/sf_project_staging/dump';
+
+Directory created.
+
+SQL> GRANT CREATE SESSION TO pdb1_intern;
+
+Grant succeeded.
+
+SQL> GRANT DATAPUMP_IMP_FULL_DATABASE TO pdb1_intern;
+
+Grant succeeded.
+
+SQL> GRANT READ, WRITE ON DIRECTORY NEW_DIR TO pdb1_intern;
+
+Grant succeeded.
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+[oracle@pvm1 ~]$ impdp pdb1_intern@pdb1 DIRECTORY=NEW_DIR DUMPFILE=hr.dmp LOGFILE=dpt_new.log TABLES=HR.DEPARTMENTS REMAP_SCHEMA=HR:PDB1_INTERN  REMAP_TABLE=HR.DEPARTMENTS:DPTS REMAP_TABLESPACE=USERS:NXTBS LOGTIME=ALL METRICS=YES
+
+Import: Release 19.0.0.0.0 - Production on Wed Oct 7 18:47:13 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+Password: 
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+07-OCT-26 18:47:22.637: W-1 Startup took 1 seconds
+07-OCT-26 18:47:25.391: W-1 Master table "PDB1_INTERN"."SYS_IMPORT_TABLE_01" successfully loaded/unloaded
+07-OCT-26 18:47:27.224: Starting "PDB1_INTERN"."SYS_IMPORT_TABLE_01":  pdb1_intern/********@pdb1 DIRECTORY=NEW_DIR DUMPFILE=hr.dmp LOGFILE=dpt_new.log TABLES=HR.DEPARTMENTS REMAP_SCHEMA=HR:PDB1_INTERN REMAP_TABLE=HR.DEPARTMENTS:DPTS REMAP_TABLESPACE=USERS:NXTBS LOGTIME=ALL METRICS=YES 
+07-OCT-26 18:47:27.428: W-1 Processing object type TABLE_EXPORT/TABLE/TABLE
+07-OCT-26 18:47:28.438: W-1      Completed 1 TABLE objects in 1 seconds
+07-OCT-26 18:47:28.481: W-1 Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+07-OCT-26 18:47:28.778: W-1 . . imported "PDB1_INTERN"."DPTS"                        8.460 KB      27 rows in 0 seconds using direct_path
+07-OCT-26 18:47:28.839: W-1 Processing object type TABLE_EXPORT/TABLE/COMMENT
+07-OCT-26 18:47:29.135: W-1      Completed 5 COMMENT objects in 1 seconds
+07-OCT-26 18:47:29.178: W-1 Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+07-OCT-26 18:47:29.519: W-1      Completed 2 INDEX objects in 0 seconds
+07-OCT-26 18:47:29.519: W-1 Processing object type TABLE_EXPORT/TABLE/CONSTRAINT/CONSTRAINT
+07-OCT-26 18:47:29.840: W-1      Completed 1 CONSTRAINT objects in 0 seconds
+07-OCT-26 18:47:29.840: W-1 Processing object type TABLE_EXPORT/TABLE/INDEX/STATISTICS/INDEX_STATISTICS
+07-OCT-26 18:47:29.960: W-1      Completed 2 INDEX_STATISTICS objects in 0 seconds
+07-OCT-26 18:47:29.960: W-1 Processing object type TABLE_EXPORT/TABLE/CONSTRAINT/REF_CONSTRAINT
+07-OCT-26 18:47:30.163: ORA-39083: Object type REF_CONSTRAINT:"PDB1_INTERN"."DEPT_LOC_FK" failed to create with error:
+ORA-00942: table or view does not exist
+
+Failing sql is:
+ALTER TABLE "PDB1_INTERN"."DPTS" ADD CONSTRAINT "DEPT_LOC_FK" FOREIGN KEY ("LOCATION_ID") REFERENCES "PDB1_INTERN"."LOCATIONS" ("LOCATION_ID") ENABLE
+
+07-OCT-26 18:47:30.163: ORA-39083: Object type REF_CONSTRAINT:"PDB1_INTERN"."DEPT_MGR_FK" failed to create with error:
+ORA-00942: table or view does not exist
+
+Failing sql is:
+ALTER TABLE "PDB1_INTERN"."DPTS" ADD CONSTRAINT "DEPT_MGR_FK" FOREIGN KEY ("MANAGER_ID") REFERENCES "PDB1_INTERN"."EMPLOYEES" ("EMPLOYEE_ID") ENABLE
+
+07-OCT-26 18:47:30.222: W-1      Completed 2 REF_CONSTRAINT objects in 0 seconds
+07-OCT-26 18:47:30.222: W-1 Processing object type TABLE_EXPORT/TABLE/STATISTICS/TABLE_STATISTICS
+07-OCT-26 18:47:30.352: W-1      Completed 1 TABLE_STATISTICS objects in 0 seconds
+07-OCT-26 18:47:30.352: W-1 Processing object type TABLE_EXPORT/TABLE/STATISTICS/MARKER
+07-OCT-26 18:47:57.315: W-1      Completed 1 MARKER objects in 27 seconds
+07-OCT-26 18:47:57.406: W-1      Completed 1 TABLE_EXPORT/TABLE/TABLE_DATA objects in 0 seconds
+07-OCT-26 18:47:57.571: Job "PDB1_INTERN"."SYS_IMPORT_TABLE_01" completed with 2 error(s) at Wed Oct 7 18:47:57 2026 elapsed 0 00:00:37
+
+[oracle@pvm1 ~]$ sqlplus pdb1_intern@pdb1
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Oct 7 18:50:31 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter password: 
+Last Successful login time: Wed Oct 07 2026 18:47:18 +01:00
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> SELECT table_name, tablespace_name FROM user_tables WHERE table_name = 'DPTS';
+
+TABLE_NAME
+--------------------------------------------------------------------------------
+TABLESPACE_NAME
+------------------------------
+DPTS
+NXTBS
+
+
+SQL> SELECT COUNT(*) FROM dpts;
+
+  COUNT(*)
+----------
+	27
+
+SQL> SELECT COUNT(*) FROM dpts;                   * FROM DPTS;
+
+DEPARTMENT_ID DEPARTMENT_NAME		     MANAGER_ID LOCATION_ID
+------------- ------------------------------ ---------- -----------
+	   10 Administration			    200        1700
+	   20 Marketing 			    201        1800
+	   30 Purchasing			    114        1700
+	   40 Human Resources			    203        2400
+	   50 Shipping				    121        1500
+	   60 IT				    103        1400
+	   70 Public Relations			    204        2700
+	   80 Sales				    145        2500
+	   90 Executive 			    100        1700
+	  100 Finance				    108        1700
+	  110 Accounting			    205        1700
+
+DEPARTMENT_ID DEPARTMENT_NAME		     MANAGER_ID LOCATION_ID
+------------- ------------------------------ ---------- -----------
+	  120 Treasury					       1700
+	  130 Corporate Tax				       1700
+	  140 Control And Credit			       1700
+	  150 Shareholder Services			       1700
+	  160 Benefits					       1700
+	  170 Manufacturing				       1700
+	  180 Construction				       1700
+	  190 Contracting				       1700
+	  200 Operations				       1700
+	  210 IT Support				       1700
+	  220 NOC					       1700
+
+DEPARTMENT_ID DEPARTMENT_NAME		     MANAGER_ID LOCATION_ID
+------------- ------------------------------ ---------- -----------
+	  230 IT Helpdesk				       1700
+	  240 Government Sales				       1700
+	  250 Retail Sales				       1700
+	  260 Recruiting				       1700
+	  270 Payroll					       1700
+
+27 rows selected.
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+[oracle@pvm1 ~]$ exit
+logout
+[root@pvm1 ~]# exit
+exit
+
+Script done on Wed 07 Oct 2026 06:51:50 PM WAT

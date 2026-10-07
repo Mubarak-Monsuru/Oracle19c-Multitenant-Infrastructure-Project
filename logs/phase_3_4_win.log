@@ -1,0 +1,194 @@
+**********************
+Windows PowerShell transcript start
+Start time: ***
+Username: ***
+RunAs User: ***
+Machine: WINSRV (Microsoft Windows NT ***)
+Host Application: ***
+Process ID: ***
+PSVersion: ***
+PSEdition: Desktop
+PSCompatibleVersions: ***
+BuildVersion: ***
+CLRVersion: ***
+WSManStackVersion: ***
+PSRemotingProtocolVersion: ***
+SerializationVersion: ***
+**********************
+Transcript started, output file is D:\phase3_4_win.log
+PS C:\Windows\system32> sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Oct 7 09:13:39 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> CREATE TABLESPACE WINTBS DATAFILE SIZE 200M AUTOEXTEND ON NEXT 100M MAXSIZE 2G;
+
+Tablespace created.
+
+SQL> CREATE USER win_intern IDENTIFIED BY Password
+  2  DEFAULT TABLESPACE WINTBS
+  3  TEMPORARY TABLESPACE TEMP
+  4  QUOTA UNLIMITED ON WINTBS;
+
+User created.
+
+SQL> GRANT CREATE SESSION, CREATE SYNONYM, CREATE DATABASE LINK TO win_intern;
+
+Grant succeeded.
+
+SQL> SHOW PARAMETER GLOBAL_NAMES
+
+NAME                                 TYPE        VALUE
+------------------------------------ ----------- ------------------------------
+global_names                         boolean     FALSE
+SQL> conn win_intern@orawindb
+Enter password:
+Connected
+SQL> SHOW USER
+USER is "WIN_INTERN"
+SQL> CREATE DATABASE LINK link2pdb1
+  2  CONNECT TO hr IDENTIFIED BY Password USING 'PDB1';
+
+Database link created.
+
+SQL> SELECT COUNT(*) FROM DEPARTMENTS@link2pdb1;
+
+  COUNT(*)
+----------
+        27
+
+SQL> CREATE SYNONYM DPT FOR DEPARTMENTS@link2pdb1;
+
+Synonym created.
+
+SQL> SELECT * FROM DPT;
+
+DEPARTMENT_ID DEPARTMENT_NAME                MANAGER_ID LOCATION_ID
+------------- ------------------------------ ---------- -----------
+           10 Administration                        200        1700
+           20 Marketing                             201        1800
+           30 Purchasing                            114        1700
+           40 Human Resources                       203        2400
+           50 Shipping                              121        1500
+           60 IT                                    103        1400
+           70 Public Relations                      204        2700
+           80 Sales                                 145        2500
+           90 Executive                             100        1700
+          100 Finance                               108        1700
+          110 Accounting                            205        1700
+
+DEPARTMENT_ID DEPARTMENT_NAME                MANAGER_ID LOCATION_ID
+------------- ------------------------------ ---------- -----------
+          120 Treasury                                         1700
+          130 Corporate Tax                                    1700
+          140 Control And Credit                               1700
+          150 Shareholder Services                             1700
+          160 Benefits                                         1700
+          170 Manufacturing                                    1700
+          180 Construction                                     1700
+          190 Contracting                                      1700
+          200 Operations                                       1700
+          210 IT Support                                       1700
+          220 NOC                                              1700
+
+DEPARTMENT_ID DEPARTMENT_NAME                MANAGER_ID LOCATION_ID
+------------- ------------------------------ ---------- -----------
+          230 IT Helpdesk                                      1700
+          240 Government Sales                                 1700
+          250 Retail Sales                                     1700
+          260 Recruiting                                       1700
+          270 Payroll                                          1700
+
+27 rows selected.
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+PS C:\Windows\system32> mkdir D:\dump
+
+
+    Directory: D:\
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        10/7/2026   9:36 AM                dump
+
+
+PS C:\Windows\system32> mkdir Z:\dump
+
+
+    Directory: Z:\
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        10/7/2026   9:36 AM                dump
+
+
+PS C:\Windows\system32> sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Oct 7 09:37:30 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> CREATE DIRECTORY NEW_DIR AS 'D:\dump';
+
+Directory created.
+
+SQL> GRANT READ, WRITE ON DIRECTORY NEW_DIR TO win_intern;
+
+Grant succeeded.
+
+SQL> GRANT DATAPUMP_EXP_FULL_DATABASE TO win_intern;
+
+Grant succeeded.
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+PS C:\Windows\system32> expdp win_intern@orawindb DIRECTORY=NEW_DIR NETWORK_LINK=link2pdb1 DUMPFILE=hr.dmp TABLES= HR.DEPARTMENTS
+
+Export: Release 19.0.0.0.0 - Production on Wed Oct 7 11:16:57 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+Password:
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "WIN_INTERN"."SYS_EXPORT_TABLE_01":  win_intern/********@orawindb DIRECTORY=NEW_DIR NETWORK_LINK=link2pdb1 DUMP
+FILE=hr.dmp TABLES=HR.DEPARTMENTS
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/INDEX/STATISTICS/INDEX_STATISTICS
+Processing object type TABLE_EXPORT/TABLE/STATISTICS/TABLE_STATISTICS
+Processing object type TABLE_EXPORT/TABLE/STATISTICS/MARKER
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/COMMENT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Processing object type TABLE_EXPORT/TABLE/CONSTRAINT/CONSTRAINT
+Processing object type TABLE_EXPORT/TABLE/CONSTRAINT/REF_CONSTRAINT
+. . exported "HR"."DEPARTMENTS"                          8.460 KB      27 rows
+Master table "WIN_INTERN"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for WIN_INTERN.SYS_EXPORT_TABLE_01 is:
+  D:\DUMP\HR.DMP
+Job "WIN_INTERN"."SYS_EXPORT_TABLE_01" successfully completed at Wed Oct 7 11:17:45 2026 elapsed 0 00:00:43
+PS C:\Windows\system32> copy D:\dump\hr.dmp z:\dump
+PS C:\Windows\system32> Stop-Transcript
+**********************
+Windows PowerShell transcript end
+End time: 20261007111837
+**********************
