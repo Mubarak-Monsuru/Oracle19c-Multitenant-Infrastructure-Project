@@ -10,7 +10,7 @@
 
 ◆ **CDB:** ORADBCDB.
 
-◆ **PDB:** PDB1.
+◆ **PDB:** PDB1 & PDB2.
 
 ◆ **Architecture Model:** $\text{Windows Client (Admin/Dev)} \iff \text{Oracle Linux 19c Server (CDB/PDBs)}$
 
@@ -36,7 +36,7 @@ This project involves deploying a multi-tier enterprise database architecture. T
 
 ## 3. Project Tasks Breakdown
 
-### 3.1 Phase 1: Database Creation, Storage & Memory Architecture (1Z0-082)
+### 3.1 Phase 1: Database Creation, Storage & Memory Architecture
 ◆ Install Oracle Database 19c software on Oracle Linux 7: Oracle Database 19c was installed on Oracle Linux 7 by following the [Oracle Database 19c Installation On Oracle Linux 7 (OL7)](https://oracle-base.com/articles/19c/oracle-db-19c-installation-on-oracle-linux-7) documentation. The complete execution log for the Oracle software installation and database creation process is available in the [Execution log](https://raw.githubusercontent.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/refs/heads/main/logs/phase1_install.log). 
 
 ![Oracle Linux Installation](.png/Oracle_Linux_Installation_2.png)
@@ -59,7 +59,7 @@ The SQL scripts used to create and configure the PDB are maintained in the proje
 
 ◆ Configure Automatic Shared Memory Management (ASMM), tuning `SGA_TARGET` and `PGA_AGGREGATE_TARGET` parameters: Approximately 70% of the VM's 5.5 GB physical memory was designated for Oracle memory management. This allocation was divided approximately 60/40 between the SGA and PGA, resulting in an SGA_TARGET of 2368 MB and a PGA_AGGREGATE_TARGET of 1536 MB. MEMORY_TARGET and MEMORY_MAX_TARGET were set to 0 to use Automatic Shared Memory Management (ASMM). The [ASMM Log File](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase1_asmm.log) contains the complete configuration steps and verification output.
 
-### 3.2 Phase 2: Cross-Platform Networking & Connectivity Setup (1Z0-082)
+### 3.2 Phase 2: Cross-Platform Networking & Connectivity Setup
 ◆ Install Oracle Database 19c Software and Create Oracle Database on a Windows VM: Installed Oracle Database 19c Enterprise Edition on the Windows administrator host (orawindb) to serve as a cross-platform client and remote database node. To enable seamless inter-node communication and hostname resolution across operating system boundaries without relying on DNS, static host mappings were configured in Oracle Linux and on the Windows workstation.
 
 ![Oracle Windows](.png/oracle_windows_installation.png)
@@ -77,31 +77,45 @@ The SQL scripts used to create and configure the PDB are maintained in the proje
 ![Windows-to-Liniux](.png/conn_to_linux.png)
 **Figure 7:** Remote SQL*Plus Client Connection from Windows to Oracle Linux CDB/PDB Service
 
-◆ Establish Database Links (`DBLINK`) between PDBs and execute remote cross-PDB queries.
 
-### 3.3 Phase 3: Multitenant Lifecycle Operations (1Z0-082 & 1Z0-083)
-- [ ] Perform remote PDB lifecycle operations from the Windows workstation:
-  - [ ] Hot and cold cloning of `pdb1` into new test PDBs.
-  - [ ] Unplugging a PDB to a `.pdb` / `.xml` manifest and plugging it into the CDB.
-  - [ ] Dropping PDBs safely with datafiles.
-  - [ ] Managing startup/shutdown states and setting `AUTOSTART` policies for PDBs.
+### 3.3 Phase 3: Enterprise Security & Remote Authentication
+◆ Implement Common Users (C##ORAUSER):
+- Created C##ORAUSER in CDB$ROOT with universal session privileges (CONTAINER=ALL).
+- Configured multi-tenant access using SET CONTAINER_DATA=ALL CONTAINER=CURRENT, enabling the user to query system and application data across all Plugged Databases (PDBs).
 
-### 3.4 Phase 4: Enterprise Security & Remote Authentication (1Z0-082)
-- [ ] Implement Common Users (e.g., `C##admin`) and assign Common Roles across all PDBs.
-- [ ] Create Local Users and assign granular Local Roles within specific PDBs.
-- [ ] Design and enforce Password Profiles (failed login attempts, password lifetime, complexity rules).
-- [ ] Configure Remote Password File authentication (`orapwd`) to allow secure remote `SYSDBA` access from Windows.
-- [ ] Test and document OS-based authentication vs. password file authentication.
+◆ Create Local Users & Assign Granular Privileges:
+- Created local schema user win_intern in the Windows database (orawindb) with assigned default tablespace WINTBS.
+- Created target local schema user pdb1_intern in PDB1 assigned to NXTBS tablespace.
+- Granted granular administrative system privileges on both sides, including DATAPUMP_EXP_FULL_DATABASE and DATAPUMP_IMP_FULL_DATABASE.
 
-◆ Provision `BIGFILE` tablespaces, manage datafiles, and configure undo segments for multitenant isolation.
+◆ Design & Enforce Password Profiles:
+- Created custom security profile intern_prof inside PDB1 with strict limits: FAILED_LOGIN_ATTEMPTS 5, PASSWORD_LIFE_TIME 180, PASSWORD_LOCK_TIME 1/24 (1-hour lockout), and PASSWORD_REUSE_TIME 60.
+- Enforced corporate governance by assigning PROFILE intern_prof directly to pdb1_intern at user creation.
 
-### 3.5 Phase 5: Remote Data Ingestion & Data Pipelines (1Z0-082)
-- [ ] Prepare flat CSV data files on the Windows client workstation.
-- [ ] Execute remote `SQLLDR` (SQL*Loader) from Windows to ingest data into target PDB tables.
-- [ ] Define Oracle External Tables over staging files on the server for direct querying.
-- [ ] Perform remote Data Pump exports (`expdp`) and imports (`impdp`) over Network Links between PDBs.
+### 3.4 Phase 4: Remote Data Ingestion & Data Pipelines
+◆ Prepare flat CSV data files on the Windows client workstation.
 
-### 3.6 Phase 6: Automated Task Scheduling & Maintenance (1Z0-082)
-- [ ] Create custom database jobs using `DBMS_SCHEDULER` to automate optimizer statistics gathering (`DBMS_STATS`).
+◆ Execute remote `SQLLDR` (SQL*Loader) from Windows to ingest data into target PDB tables.
+
+◆ Remote Data Pump Exports (expdp) & Network Links:
+
+- Configured a database link link2pdb1 from win_intern@orawindb pointing to HR@PDB1.
+- Created abstract private database object CREATE SYNONYM DPT FOR DEPARTMENTS@link2pdb1; and verified direct cross-database querying (27 rows selected).
+- Initiated a remote Data Pump export (expdp) over NETWORK_LINK=link2pdb1 directly from Windows, dumping HR.DEPARTMENTS into local storage (D:\DUMP\HR.DMP).
+
+◆ Data Pump Imports (impdp) to Target Schema:
+- Staged the dump file on Linux shared mount /media/sf_project_staging/dump/hr.dmp and mapped directory NEW_DIR.
+- Executed impdp into schema pdb1_intern, using runtime transformations: REMAP_SCHEMA=HR:PDB1_INTERN, REMAP_TABLE=HR.DEPARTMENTS:DPTS & REMAP_TABLESPACE=USERS:NXTBS
+- Successfully loaded 27 rows into table PDB1_INTERN.DPTS.
+
+All terminal commands, session outputs, and Data Pump migration transcripts for Phase 3 and Phase 4 have been recorded and audited across both operational environments:
+
+* **Windows Workstation Environment:** [View Windows Expdp Execution Log](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase_3_4_win.log)  
+  *(Contains: Tablespace creation, `win_intern` schema setup, DB Link `link2pdb1` configuration, remote `expdp` over network link, and transcript metadata)*
+
+* **Linux Server Environment (PDB1):** [View Linux Impdp Execution Log](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase_3_4_linux.log)  
+  *(Contains: Common user `C##ORAUSER` creation, password profile `intern_prof` enforcement, `pdb1_intern` staging, and schema/table remapped `impdp` execution)*
+### 3.5 Phase 5: Automated Task Scheduling & Maintenance (1Z0-082)
+- Create custom database jobs using `DBMS_SCHEDULER` to automate optimizer statistics gathering (`DBMS_STATS`).
 - [ ] Configure automated maintenance windows and schedule log/purge routines.
 - [ ] Verify job execution logs and monitor status via `DBA_SCHEDULER_JOBS` views.
