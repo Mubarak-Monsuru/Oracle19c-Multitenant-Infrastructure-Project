@@ -15,7 +15,7 @@
 ◆ **Architecture Model:** $\text{Windows Client (Admin/Dev)} \iff \text{Oracle Linux 19c Server (CDB/PDBs)}$
 
 ### 1.1 Scenario & Workflow
-This project involves deploying a multi-tier enterprise database architecture. The core database infrastructure (Container Database `oradbcdb` and Pluggable Databases `pdb1`, `pdb2`) resides on the Oracle Linux 19c server. Administrative tasks, security policy enforcement, data ingestion pipelines, and reporting operations are executed remotely from the Windows workstation using SQL*Plus, SQL Developer, SQL*Loader, and Data Pump.
+This project involves deploying a multi-tier enterprise database architecture. The core database infrastructure (Container Database `oradbcdb` and Pluggable Databases `pdb1`, `pdb2`) resides on the Oracle Linux 19c server. Administrative tasks, security policy enforcement, data ingestion pipelines, and reporting operations are executed remotely from the Windows workstation using SQL*Plus, SQL*Loader, and Data Pump.
 
 ---
 
@@ -93,12 +93,7 @@ The SQL scripts used to create and configure the PDB are maintained in the proje
 - Enforced corporate governance by assigning PROFILE intern_prof directly to pdb1_intern at user creation.
 
 ### 3.4 Phase 4: Remote Data Ingestion & Data Pipelines
-◆ Prepare flat CSV data files on the Windows client workstation.
-
-◆ Execute remote `SQLLDR` (SQL*Loader) from Windows to ingest data into target PDB tables.
-
 ◆ Remote Data Pump Exports (expdp) & Network Links:
-
 - Configured a database link link2pdb1 from win_intern@orawindb pointing to HR@PDB1.
 - Created abstract private database object CREATE SYNONYM DPT FOR DEPARTMENTS@link2pdb1; and verified direct cross-database querying (27 rows selected).
 - Initiated a remote Data Pump export (expdp) over NETWORK_LINK=link2pdb1 directly from Windows, dumping HR.DEPARTMENTS into local storage (D:\DUMP\HR.DMP).
@@ -108,6 +103,12 @@ The SQL scripts used to create and configure the PDB are maintained in the proje
 - Executed impdp into schema pdb1_intern, using runtime transformations: REMAP_SCHEMA=HR:PDB1_INTERN, REMAP_TABLE=HR.DEPARTMENTS:DPTS & REMAP_TABLESPACE=USERS:NXTBS
 - Successfully loaded 27 rows into table PDB1_INTERN.DPTS.
 
+◆ Data Ingestion via SQL*Loader (SQLLDR): 
+- Created dedicated tablespace SLTBS with auto-extension enabled on PDB2. Enforced corporate security controls by creating custom password profile test_prof (limits on failed logins, password lifetime, reuse, and lock time) and assigning it to new schema user pdb2_intern. Granted pdb2_intern unlimited quota on SLTBS alongside CREATE SESSION and CREATE TABLE privileges.
+- Defined structure for PDB2.SALES_DATA table using standard data types (VARCHAR2, NUMBER, DATE).
+- Staged flat source CSV file sales_data.csv on the staging environment. Created SQL*Loader control file salesdata.ctl to define field delimiters (TERMINATED BY ','), trailing null handling, and explicit date mask conversion (DATE "DD-MM-YYYY").
+- Executed sqlldr utility targeting PDB2 with SKIP=1 to bypass CSV header row and verified successful bulk data ingestion.
+
 All terminal commands, session outputs, and Data Pump migration transcripts for Phase 3 and Phase 4 have been recorded and audited across both operational environments:
 
 * **Windows Workstation Environment:** [View Windows Expdp Execution Log](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase_3_4_win.log)  
@@ -115,6 +116,9 @@ All terminal commands, session outputs, and Data Pump migration transcripts for 
 
 * **Linux Server Environment (PDB1):** [View Linux Impdp Execution Log](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase_3_4_linux.log)  
   *(Contains: Common user `C##ORAUSER` creation, password profile `intern_prof` enforcement, `pdb1_intern` staging, and schema/table remapped `impdp` execution)*
+
+  The complete execution process and output logs are available in the [SQL*Loader Execution log](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase__4__sqlloader.log)
+
 ### 3.5 Phase 5: Automated Task Scheduling & Maintenance (1Z0-082)
 - Create custom database jobs using `DBMS_SCHEDULER` to automate optimizer statistics gathering (`DBMS_STATS`).
 - [ ] Configure automated maintenance windows and schedule log/purge routines.
