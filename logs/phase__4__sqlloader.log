@@ -1,0 +1,546 @@
+Script started on Thu 08 Oct 2026 07:09:51 PM WAT
+[root@pvm1 ~]# su - oracle
+Last login: Wed Oct  7 19:12:05 WAT 2026 on pts/0
+[oracle@pvm1 ~]$ mkdir -p ~/sqlldr
+[oracle@pvm1 ~]$ mv /media/sf_project_staging/sales_data.csv ~/sqlldr/
+[oracle@pvm1 ~]$ ~/scripts/start_all.sh
+The Oracle base remains unchanged with value /u01/app/oracle
+Processing Database instance "oradbcdb": log file /u01/app/oracle/product/19.0.0/dbhome_1/rdbms/log/startup.log
+[oracle@pvm1 ~]$ cd ~/sqlldr
+[oracle@pvm1 sqlldr]$ sqlplus system@pdb2
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Oct 8 19:15:06 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter password: 
+Last Successful login time: Wed Oct 07 2026 18:11:12 +01:00
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> SHOW USER
+USER is "SYSTEM"
+SQL> SHOW CON_ID CON_NAME
+
+CON_ID
+------------------------------
+4
+
+CON_NAME
+------------------------------
+PDB2
+SQL> CREATE TABLESPACE SLTBS DATAFILE SIZE 200M AUTOEXTEND ON NEXT 100M MAXSIZE 1G;
+
+Tablespace created.
+
+SQL> CREATE PROFILE test_prof LIMIT
+  FAILED_LOGIN_ATTEMPTS 5 
+  PASSWORD_LIFE_TIME 180
+  PASSWORD_REUSE_TIME 60
+  PASSWORD_REUSE_MAX 3
+  PASSWORD_LOCK_TIME 1/24
+  PASSWORD_GRACE_TIME 5
+  PASSWORD_VERIFY_FUNCTION DEFAULT
+  SESSIONS_PER_USER UNLIMITED
+  CPU_PER_SESSION UNLIMITED;  2    3    4    5    6    7    8    9   10  
+
+Profile created.
+
+SQL> CREATE USER pdb2_intern
+IDENTIFIED BY ABcd##1234
+DEFAULT TABLESPACE SLTBS
+TEMPORARY TABLESPACE TEMP
+QUOTA UNLIMITED ON SLTBS
+PROFILE test_prof;  2    3    4    5    6  
+
+User created.
+
+SQL> GRANT CREATE SESSION, CREATE TABLE TO pdb2_intern;
+
+Grant succeeded.
+
+SQL> conn pdb2_intern@pdb2
+Enter password: 
+Connected.
+SQL> SHOW USER
+USER is "PDB2_INTERN"
+SQL> CREATE TABLE SALES_DATA (
+  INVOICE_NO    VARCHAR2(10) PRIMARY KEY,
+  CUSTOMER_ID   VARCHAR2(10) NOT NULL,
+  CATEGORY      VARCHAR2(50),
+  QUANTITY      NUMBER(5),
+  PRICE         NUMBER(10,2),
+  INVOICE_DATE  DATE,
+  SHOPPING_MALL VARCHAR2(50)
+);  2    3    4    5    6    7    8    9  
+
+Table created.
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+[oracle@pvm1 sqlldr]$ vi ~/sqlldr/salesdata.ctl
+"~/sqlldr/salesdata.ctl" [New File]>c~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             ~                                                                                                                                                             0,0-1All?12l?25h?25l-- INSERT --0,1All?12l?25h?25lLOAD DATA
+INFILE 'sales_data.csv' "str '\r\n'"INSERTINTO TABLE SALES_DATAFIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'TRAILING NULLCOLS(  INVOICE_NO,  CUSTOMER_ID,  CATEGORY,  QUANTITY,  PRICE,  INVOICE_DATE DATE "DD-MM-YYYY",  SHOPPING_MALL)()15,2?12l?25h?25l()4?12l?25h?25l()5?12l?25h?25l()4?12l?25h?25l()5?12l?25h?25l15,1All?12l?25h?25l:?12l?25hw?25l?12l?25hq?25l?12l?25h
+"salesdata.ctl" [New] 15L, 262C written
+
+
+[oracle@pvm1 sqlldr]$ sqlldr pdb2_intern@pdb2 control=salesdata.ctl log=salesdata.log skip=1
+Password:
+
+SQL*Loader: Release 19.0.0.0.0 - Production on Thu Oct 8 19:24:06 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Path used:      Conventional
+Commit point reached - logical record count 250
+Commit point reached - logical record count 500
+Commit point reached - logical record count 750
+Commit point reached - logical record count 1000
+Commit point reached - logical record count 1250
+Commit point reached - logical record count 1500
+Commit point reached - logical record count 1750
+Commit point reached - logical record count 2000
+Commit point reached - logical record count 2250
+Commit point reached - logical record count 2500
+Commit point reached - logical record count 2750
+Commit point reached - logical record count 3000
+Commit point reached - logical record count 3250
+Commit point reached - logical record count 3500
+Commit point reached - logical record count 3750
+Commit point reached - logical record count 4000
+Commit point reached - logical record count 4250
+Commit point reached - logical record count 4500
+Commit point reached - logical record count 4750
+Commit point reached - logical record count 5000
+Commit point reached - logical record count 5250
+Commit point reached - logical record count 5500
+Commit point reached - logical record count 5750
+Commit point reached - logical record count 6000
+Commit point reached - logical record count 6250
+Commit point reached - logical record count 6500
+Commit point reached - logical record count 6750
+Commit point reached - logical record count 7000
+Commit point reached - logical record count 7250
+Commit point reached - logical record count 7500
+Commit point reached - logical record count 7750
+Commit point reached - logical record count 8000
+Commit point reached - logical record count 8250
+Commit point reached - logical record count 8500
+Commit point reached - logical record count 8750
+Commit point reached - logical record count 9000
+Commit point reached - logical record count 9250
+Commit point reached - logical record count 9500
+Commit point reached - logical record count 9750
+Commit point reached - logical record count 10000
+Commit point reached - logical record count 10250
+Commit point reached - logical record count 10500
+Commit point reached - logical record count 10750
+Commit point reached - logical record count 11000
+Commit point reached - logical record count 11250
+Commit point reached - logical record count 11500
+Commit point reached - logical record count 11750
+Commit point reached - logical record count 12000
+Commit point reached - logical record count 12250
+Commit point reached - logical record count 12500
+Commit point reached - logical record count 12750
+Commit point reached - logical record count 13000
+Commit point reached - logical record count 13250
+Commit point reached - logical record count 13500
+Commit point reached - logical record count 13750
+Commit point reached - logical record count 14000
+Commit point reached - logical record count 14250
+Commit point reached - logical record count 14500
+Commit point reached - logical record count 14750
+Commit point reached - logical record count 15000
+Commit point reached - logical record count 15250
+Commit point reached - logical record count 15500
+Commit point reached - logical record count 15750
+Commit point reached - logical record count 16000
+Commit point reached - logical record count 16250
+Commit point reached - logical record count 16500
+Commit point reached - logical record count 16750
+Commit point reached - logical record count 17000
+Commit point reached - logical record count 17250
+Commit point reached - logical record count 17500
+Commit point reached - logical record count 17750
+Commit point reached - logical record count 17891
+Commit point reached - logical record count 18141
+Commit point reached - logical record count 18391
+Commit point reached - logical record count 18641
+Commit point reached - logical record count 18891
+Commit point reached - logical record count 19141
+Commit point reached - logical record count 19391
+Commit point reached - logical record count 19641
+Commit point reached - logical record count 19891
+Commit point reached - logical record count 20141
+Commit point reached - logical record count 20391
+Commit point reached - logical record count 20641
+Commit point reached - logical record count 20891
+Commit point reached - logical record count 21141
+Commit point reached - logical record count 21391
+Commit point reached - logical record count 21641
+Commit point reached - logical record count 21891
+Commit point reached - logical record count 22141
+Commit point reached - logical record count 22391
+Commit point reached - logical record count 22641
+Commit point reached - logical record count 22891
+Commit point reached - logical record count 23141
+Commit point reached - logical record count 23391
+Commit point reached - logical record count 23641
+Commit point reached - logical record count 23891
+Commit point reached - logical record count 24141
+Commit point reached - logical record count 24391
+Commit point reached - logical record count 24641
+Commit point reached - logical record count 24891
+Commit point reached - logical record count 25141
+Commit point reached - logical record count 25391
+Commit point reached - logical record count 25641
+Commit point reached - logical record count 25891
+Commit point reached - logical record count 26141
+Commit point reached - logical record count 26391
+Commit point reached - logical record count 26641
+Commit point reached - logical record count 26891
+Commit point reached - logical record count 27141
+Commit point reached - logical record count 27391
+Commit point reached - logical record count 27641
+Commit point reached - logical record count 27891
+Commit point reached - logical record count 28141
+Commit point reached - logical record count 28391
+Commit point reached - logical record count 28641
+Commit point reached - logical record count 28891
+Commit point reached - logical record count 29141
+Commit point reached - logical record count 29391
+Commit point reached - logical record count 29641
+Commit point reached - logical record count 29891
+Commit point reached - logical record count 30141
+Commit point reached - logical record count 30391
+Commit point reached - logical record count 30641
+Commit point reached - logical record count 30891
+Commit point reached - logical record count 31141
+Commit point reached - logical record count 31391
+Commit point reached - logical record count 31641
+Commit point reached - logical record count 31891
+Commit point reached - logical record count 32141
+Commit point reached - logical record count 32391
+Commit point reached - logical record count 32641
+Commit point reached - logical record count 32891
+Commit point reached - logical record count 33141
+Commit point reached - logical record count 33391
+Commit point reached - logical record count 33641
+Commit point reached - logical record count 33891
+Commit point reached - logical record count 34141
+Commit point reached - logical record count 34391
+Commit point reached - logical record count 34641
+Commit point reached - logical record count 34891
+Commit point reached - logical record count 35141
+Commit point reached - logical record count 35391
+Commit point reached - logical record count 35641
+Commit point reached - logical record count 35796
+Commit point reached - logical record count 36046
+Commit point reached - logical record count 36296
+Commit point reached - logical record count 36546
+Commit point reached - logical record count 36796
+Commit point reached - logical record count 37046
+Commit point reached - logical record count 37296
+Commit point reached - logical record count 37546
+Commit point reached - logical record count 37796
+Commit point reached - logical record count 38046
+Commit point reached - logical record count 38296
+Commit point reached - logical record count 38546
+Commit point reached - logical record count 38796
+Commit point reached - logical record count 39046
+Commit point reached - logical record count 39296
+Commit point reached - logical record count 39546
+Commit point reached - logical record count 39796
+Commit point reached - logical record count 40046
+Commit point reached - logical record count 40296
+Commit point reached - logical record count 40546
+Commit point reached - logical record count 40796
+Commit point reached - logical record count 41046
+Commit point reached - logical record count 41296
+Commit point reached - logical record count 41546
+Commit point reached - logical record count 41796
+Commit point reached - logical record count 42046
+Commit point reached - logical record count 42296
+Commit point reached - logical record count 42546
+Commit point reached - logical record count 42796
+Commit point reached - logical record count 43046
+Commit point reached - logical record count 43296
+Commit point reached - logical record count 43546
+Commit point reached - logical record count 43796
+Commit point reached - logical record count 44046
+Commit point reached - logical record count 44296
+Commit point reached - logical record count 44546
+Commit point reached - logical record count 44796
+Commit point reached - logical record count 45046
+Commit point reached - logical record count 45296
+Commit point reached - logical record count 45546
+Commit point reached - logical record count 45796
+Commit point reached - logical record count 46046
+Commit point reached - logical record count 46296
+Commit point reached - logical record count 46546
+Commit point reached - logical record count 46796
+Commit point reached - logical record count 47046
+Commit point reached - logical record count 47296
+Commit point reached - logical record count 47546
+Commit point reached - logical record count 47796
+Commit point reached - logical record count 48046
+Commit point reached - logical record count 48296
+Commit point reached - logical record count 48546
+Commit point reached - logical record count 48796
+Commit point reached - logical record count 49046
+Commit point reached - logical record count 49296
+Commit point reached - logical record count 49546
+Commit point reached - logical record count 49796
+Commit point reached - logical record count 50046
+Commit point reached - logical record count 50296
+Commit point reached - logical record count 50546
+Commit point reached - logical record count 50796
+Commit point reached - logical record count 51046
+Commit point reached - logical record count 51296
+Commit point reached - logical record count 51546
+Commit point reached - logical record count 51796
+Commit point reached - logical record count 52046
+Commit point reached - logical record count 52296
+Commit point reached - logical record count 52546
+Commit point reached - logical record count 52796
+Commit point reached - logical record count 53046
+Commit point reached - logical record count 53296
+Commit point reached - logical record count 53546
+Commit point reached - logical record count 53684
+Commit point reached - logical record count 53934
+Commit point reached - logical record count 54184
+Commit point reached - logical record count 54434
+Commit point reached - logical record count 54684
+Commit point reached - logical record count 54934
+Commit point reached - logical record count 55184
+Commit point reached - logical record count 55434
+Commit point reached - logical record count 55684
+Commit point reached - logical record count 55934
+Commit point reached - logical record count 56184
+Commit point reached - logical record count 56434
+Commit point reached - logical record count 56684
+Commit point reached - logical record count 56934
+Commit point reached - logical record count 57184
+Commit point reached - logical record count 57434
+Commit point reached - logical record count 57684
+Commit point reached - logical record count 57934
+Commit point reached - logical record count 58184
+Commit point reached - logical record count 58434
+Commit point reached - logical record count 58684
+Commit point reached - logical record count 58934
+Commit point reached - logical record count 59184
+Commit point reached - logical record count 59434
+Commit point reached - logical record count 59684
+Commit point reached - logical record count 59934
+Commit point reached - logical record count 60184
+Commit point reached - logical record count 60434
+Commit point reached - logical record count 60684
+Commit point reached - logical record count 60934
+Commit point reached - logical record count 61184
+Commit point reached - logical record count 61434
+Commit point reached - logical record count 61684
+Commit point reached - logical record count 61934
+Commit point reached - logical record count 62184
+Commit point reached - logical record count 62434
+Commit point reached - logical record count 62684
+Commit point reached - logical record count 62934
+Commit point reached - logical record count 63184
+Commit point reached - logical record count 63434
+Commit point reached - logical record count 63684
+Commit point reached - logical record count 63934
+Commit point reached - logical record count 64184
+Commit point reached - logical record count 64434
+Commit point reached - logical record count 64684
+Commit point reached - logical record count 64934
+Commit point reached - logical record count 65184
+Commit point reached - logical record count 65434
+Commit point reached - logical record count 65684
+Commit point reached - logical record count 65934
+Commit point reached - logical record count 66184
+Commit point reached - logical record count 66434
+Commit point reached - logical record count 66684
+Commit point reached - logical record count 66934
+Commit point reached - logical record count 67184
+Commit point reached - logical record count 67434
+Commit point reached - logical record count 67684
+Commit point reached - logical record count 67934
+Commit point reached - logical record count 68184
+Commit point reached - logical record count 68434
+Commit point reached - logical record count 68684
+Commit point reached - logical record count 68934
+Commit point reached - logical record count 69184
+Commit point reached - logical record count 69434
+Commit point reached - logical record count 69684
+Commit point reached - logical record count 69934
+Commit point reached - logical record count 70184
+Commit point reached - logical record count 70434
+Commit point reached - logical record count 70684
+Commit point reached - logical record count 70934
+Commit point reached - logical record count 71184
+Commit point reached - logical record count 71434
+Commit point reached - logical record count 71589
+Commit point reached - logical record count 71839
+Commit point reached - logical record count 72089
+Commit point reached - logical record count 72339
+Commit point reached - logical record count 72589
+Commit point reached - logical record count 72839
+Commit point reached - logical record count 73089
+Commit point reached - logical record count 73339
+Commit point reached - logical record count 73589
+Commit point reached - logical record count 73839
+Commit point reached - logical record count 74089
+Commit point reached - logical record count 74339
+Commit point reached - logical record count 74589
+Commit point reached - logical record count 74839
+Commit point reached - logical record count 75089
+Commit point reached - logical record count 75339
+Commit point reached - logical record count 75589
+Commit point reached - logical record count 75839
+Commit point reached - logical record count 76089
+Commit point reached - logical record count 76339
+Commit point reached - logical record count 76589
+Commit point reached - logical record count 76839
+Commit point reached - logical record count 77089
+Commit point reached - logical record count 77339
+Commit point reached - logical record count 77589
+Commit point reached - logical record count 77839
+Commit point reached - logical record count 78089
+Commit point reached - logical record count 78339
+Commit point reached - logical record count 78589
+Commit point reached - logical record count 78839
+Commit point reached - logical record count 79089
+Commit point reached - logical record count 79339
+Commit point reached - logical record count 79589
+Commit point reached - logical record count 79839
+Commit point reached - logical record count 80089
+Commit point reached - logical record count 80339
+Commit point reached - logical record count 80589
+Commit point reached - logical record count 80839
+Commit point reached - logical record count 81089
+Commit point reached - logical record count 81339
+Commit point reached - logical record count 81589
+Commit point reached - logical record count 81839
+Commit point reached - logical record count 82089
+Commit point reached - logical record count 82339
+Commit point reached - logical record count 82589
+Commit point reached - logical record count 82839
+Commit point reached - logical record count 83089
+Commit point reached - logical record count 83339
+Commit point reached - logical record count 83589
+Commit point reached - logical record count 83839
+Commit point reached - logical record count 84089
+Commit point reached - logical record count 84339
+Commit point reached - logical record count 84589
+Commit point reached - logical record count 84839
+Commit point reached - logical record count 85089
+Commit point reached - logical record count 85339
+Commit point reached - logical record count 85589
+Commit point reached - logical record count 85839
+Commit point reached - logical record count 86089
+Commit point reached - logical record count 86339
+Commit point reached - logical record count 86589
+Commit point reached - logical record count 86839
+Commit point reached - logical record count 87089
+Commit point reached - logical record count 87339
+Commit point reached - logical record count 87589
+Commit point reached - logical record count 87839
+Commit point reached - logical record count 88089
+Commit point reached - logical record count 88339
+Commit point reached - logical record count 88589
+Commit point reached - logical record count 88839
+Commit point reached - logical record count 89089
+Commit point reached - logical record count 89339
+Commit point reached - logical record count 89499
+Commit point reached - logical record count 89749
+Commit point reached - logical record count 89999
+Commit point reached - logical record count 90249
+Commit point reached - logical record count 90499
+Commit point reached - logical record count 90749
+Commit point reached - logical record count 90999
+Commit point reached - logical record count 91249
+Commit point reached - logical record count 91499
+Commit point reached - logical record count 91749
+Commit point reached - logical record count 91999
+Commit point reached - logical record count 92249
+Commit point reached - logical record count 92499
+Commit point reached - logical record count 92749
+Commit point reached - logical record count 92999
+Commit point reached - logical record count 93249
+Commit point reached - logical record count 93499
+Commit point reached - logical record count 93749
+Commit point reached - logical record count 93999
+Commit point reached - logical record count 94249
+Commit point reached - logical record count 94499
+Commit point reached - logical record count 94749
+Commit point reached - logical record count 94999
+Commit point reached - logical record count 95249
+Commit point reached - logical record count 95499
+Commit point reached - logical record count 95749
+Commit point reached - logical record count 95999
+Commit point reached - logical record count 96249
+Commit point reached - logical record count 96499
+Commit point reached - logical record count 96749
+Commit point reached - logical record count 96999
+Commit point reached - logical record count 97249
+Commit point reached - logical record count 97499
+Commit point reached - logical record count 97749
+Commit point reached - logical record count 97999
+Commit point reached - logical record count 98249
+Commit point reached - logical record count 98499
+Commit point reached - logical record count 98749
+Commit point reached - logical record count 98999
+Commit point reached - logical record count 99249
+Commit point reached - logical record count 99457
+
+Table SALES_DATA:
+  99457 Rows successfully loaded.
+
+Check the log file:
+  salesdata.log
+for more information about the load.
+[oracle@pvm1 sqlldr]$ sqlplus pdb2_intern@pdb2
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Oct 8 19:25:51 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter password: 
+Last Successful login time: Thu Oct 08 2026 19:24:11 +01:00
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> SELECT COUNT(*) FROM SALES_DATA;
+
+  COUNT(*)
+----------
+     99457
+
+SQL> SELECT      ELEC     ESC SALES_DATA
+ Name					   Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ INVOICE_NO				   NOT NULL VARCHAR2(10)
+ CUSTOMER_ID				   NOT NULL VARCHAR2(10)
+ CATEGORY					    VARCHAR2(50)
+ QUANTITY					    NUMBER(5)
+ PRICE						    NUMBER(10,2)
+ INVOICE_DATE					    DATE
+ SHOPPING_MALL					    VARCHAR2(50)
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+[oracle@pvm1 sqlldr]$ exit
+logout
+[root@pvm1 ~]# exit
+exit
+
+Script done on Thu 08 Oct 2026 07:27:31 PM WAT
