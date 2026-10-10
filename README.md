@@ -2,8 +2,6 @@
 
 ## 1. Overview & Architecture
 
-◆ **Client / Admin Node:** Windows Workstation (Remote Administrative Endpoint).
-
 ◆ **Database Server:** Oracle Linux 7.9 Virtual Machine.
 
 ◆ **Database:** Oracle Database 19c Enterprise Edition.
@@ -12,25 +10,23 @@
 
 ◆ **PDB:** PDB1 & PDB2.
 
-◆ **Architecture Model:** $\text{Windows Client (Admin/Dev)} \iff \text{Oracle Linux 19c Server (CDB/PDBs)}$
+◆ **Architecture Model:** $\text{Windows Workstation (orawindb)} \iff \text{Oracle Linux Server (ORADBCDB / PDB1 / PDB2)}$
 
 ### 1.1 Scenario & Workflow
-This project involves deploying a multi-tier enterprise database architecture. The core database infrastructure (Container Database `oradbcdb` and Pluggable Databases `pdb1`, `pdb2`) resides on the Oracle Linux 19c server. Administrative tasks, security policy enforcement, data ingestion pipelines, and reporting operations are executed remotely from the Windows workstation using SQL*Plus, SQL*Loader, and Data Pump.
+This project implements a multi-tier enterprise database architecture centered on an Oracle Linux 19c database server hosting container and pluggable databases (`oradbcdb`, `pdb1`, `pdb2`). While the primary database engine, storage management, and automated maintenance run natively on Linux, some activities such as cross-platform connectivity testing and network-linked Data Pump exports (`expdp`) are orchestrated seamlessly from a Windows workstation using tools like SQL*Plus and Data Pump.
 
 ---
 
 ## 2. Core Objectives
-◆ Design and establish secure cross-platform connectivity between a Windows workstation and an Oracle Linux 19c server.
+◆ Design and establish secure cross-platform connectivity and naming resolution between a Windows remote client workstation and an Oracle Linux 19c database server.
 
-◆ Provision and configure Oracle 19c Container (CDB) and Pluggable Databases (PDBs) along with automatic storage and memory tuning (ASMM).
+◆ Provision and configure Oracle 19c Container (CDB) and Pluggable Databases (PDBs) on Linux with automated storage and memory tuning (ASMM).
 
-◆ Implement administrative lifecycle workflows for multitenant databases entirely from a remote client.
+◆ Enforce enterprise security standards using common/local users, granular privilege delegation, and strict password profiles.
 
-◆ Enforce enterprise security standards using common/local users, roles, password profiles, and secure authentication models.
+◆ Build remote data pipelines and migrations using remote Data Pump operations across database links, and SQL*Loader bulk ingestion 
 
-◆ Build remote data pipelines using SQL*Loader, External Tables, and Data Pump across network links.
-
-◆ Automate recurring database maintenance and statistics collection using `DBMS_SCHEDULER`.
+◆ Automate optimizer statistics collection using decoupled Oracle Scheduler (DBMS_SCHEDULER) objects.
 
 ---
 
@@ -45,31 +41,42 @@ This project involves deploying a multi-tier enterprise database architecture. T
 ![Software Installation](.png/software_installation.png)
 **Figure 2:** Software Installation
 
-◆ Create the Container Database (oradbcdb) and Pluggable Databases (PDB1, PDB2) using DBCA and SQL scripts: A multitenant database environment was created using Database Configuration Assistant (DBCA). The Container Database (CDB), oradbcdb, and the initial Pluggable Database (PDB), PDB1, were created during the database creation process.
+◆ Create the Container Database (oradbcdb) and Pluggable Databases (PDB1, PDB2) using DBCA and SQL scripts:
+- A multitenant database environment was created using Database Configuration Assistant (DBCA). The Container Database (CDB), oradbcdb, and the initial Pluggable Database (PDB), PDB1, were created during the database creation process.
 
 ![Database Creation](.png/Database_creation.png)
 **Figure 3:** Database Creation
 
 ![CDB and PDB](.png/Cdb_pdb.png)
 **Figure 4:** CDB and PDB1
+- A second Pluggable Database, PDB2, was subsequently created from the seed container, PDB$SEED, using a SQL script. PDB2 was configured with a dedicated administrator account and a maximum storage limit of 5 GB.
+- The SQL scripts used to create and configure PDB2 are maintained in the project's [sql directory](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/sql/phase_1.sql).
 
- A second Pluggable Database, PDB2, was subsequently created from the seed container, PDB$SEED, using a SQL script. PDB2 was configured with a dedicated administrator account and a maximum storage limit of 5 GB.
-
-The SQL scripts used to create and configure the PDB are maintained in the project's [sql directory](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/sql/phase_1.sql).
-
-◆ Configure Automatic Shared Memory Management (ASMM), tuning `SGA_TARGET` and `PGA_AGGREGATE_TARGET` parameters: Approximately 70% of the VM's 5.5 GB physical memory was designated for Oracle memory management. This allocation was divided approximately 60/40 between the SGA and PGA, resulting in an SGA_TARGET of 2368 MB and a PGA_AGGREGATE_TARGET of 1536 MB. MEMORY_TARGET and MEMORY_MAX_TARGET were set to 0 to use Automatic Shared Memory Management (ASMM). The [ASMM Log File](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase1_asmm.log) contains the complete configuration steps and verification output.
+◆ Configure Automatic Shared Memory Management (ASMM), tuning `SGA_TARGET` and `PGA_AGGREGATE_TARGET` parameters:
+- Approximately 70% of the VM's 5.5 GB physical memory was designated for Oracle memory management. This allocation was divided approximately 60/40 between the SGA and PGA, resulting in an SGA_TARGET of 2368 MB and a PGA_AGGREGATE_TARGET of 1536 MB. MEMORY_TARGET and MEMORY_MAX_TARGET were set to 0 to use Automatic Shared Memory Management (ASMM).
+- The [ASMM Log File](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase1_asmm.log) contains the complete configuration steps and verification output.
 
 ### 3.2 Phase 2: Cross-Platform Networking & Connectivity Setup
-◆ Install Oracle Database 19c Software and Create Oracle Database on a Windows VM: Installed Oracle Database 19c Enterprise Edition on the Windows administrator host (orawindb) to serve as a cross-platform client and remote database node. To enable seamless inter-node communication and hostname resolution across operating system boundaries without relying on DNS, static host mappings were configured in Oracle Linux and on the Windows workstation.
+◆ Install Oracle Database 19c Software and Create Oracle Database on a Windows VM:
+- Installed Oracle Database 19c Enterprise Edition on the Windows administrator host (orawindb) to serve as a cross-platform client and remote database node.
+- To enable seamless inter-node communication and hostname resolution across operating system boundaries without relying on DNS, static host mappings were configured in Oracle Linux and on the Windows workstation.
 
 ![Oracle Windows](.png/oracle_windows_installation.png)
 **Figure 5:** Successful Oracle Database 19c Installation & Instance Creation on Windows Admin Node
 
-◆ Configure Server-Side Oracle Net Listener & Naming Methods (listener.ora, tnsnames.ora, sqlnet.ora): Utilized Oracle Network Configuration Assistant (netca) in silent/interactive mode on Oracle Linux to establish server-side network infrastructure. Configured listener.ora to register local database services on TCP/IP port 1521. Configured tnsnames.ora file to initiate connection via the local naming method. Configured sqlnet.ora to prioritize naming resolution using TNSNAMES and EZCONNECT (NAMES.DIRECTORY_PATH = (TNSNAMES, EZCONNECT)). Detailed execution output and parameter verification are recorded in the [Oracle Linux Network Configuration Log](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase2_connectivity.log). 
+◆ Configure Server-Side Oracle Net Listener & Naming Methods (listener.ora, tnsnames.ora, sqlnet.ora):
+- Utilized Oracle Network Configuration Assistant (netca) in silent/interactive mode on Oracle Linux to establish server-side network infrastructure. Configured listener.ora to register local database services on TCP/IP port 1521.
+- Configured tnsnames.ora file to initiate connection via the local naming method.
+- Configured sqlnet.ora to prioritize naming resolution using TNSNAMES and EZCONNECT (NAMES.DIRECTORY_PATH = (TNSNAMES, EZCONNECT)).
+- Detailed execution output and parameter verification are recorded in the [Oracle Linux Network Configuration Log](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase2_connectivity.log). 
 
-◆ Configure Client-Side Network Descriptors for CDB and PDB Service Routing: Configured client-side Net Service Names inside the Windows workstation's [tnsnames.ora file](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/network-config/tnsnames.ora). TNS aliases were explicitly defined for the Container Database (oradbcdb) and Pluggable Databases (pdb1 and pdb2) on the remote Linux host using proper service registration descriptors. Updated the client's [sqlnet.ora file](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/network-config/sqlnet.ora) to allow local and easynaming connection methods.
+◆ Configure Client-Side Network Descriptors for CDB and PDB Service Routing:
+- Configured client-side Net Service Names inside the Windows workstation's [tnsnames.ora file](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/network-config/tnsnames.ora). TNS aliases were explicitly defined for the Container Database (oradbcdb) and Pluggable Databases (pdb1 and pdb2) on the remote Linux host using proper service registration descriptors.
+- Updated the client's [sqlnet.ora file](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/network-config/sqlnet.ora) to allow local and easynaming connection methods.
 
-◆ Validate Cross-Platform Inter-Database & Remote Client Connectivity via SQL*Plus: Verified end-to-end network connectivity and listener responsiveness between both operating systems. Executed SQL*Plus connection tests from Oracle Linux targeting the Windows database instance (orawindb), as well as remote connection tests from Windows to the primary Container Database (oradbcdb) and isolated Pluggable Databases (pdb1 and pdb2) on Oracle Linux.
+◆ Validate Cross-Platform Inter-Database & Remote Client Connectivity via SQL*Plus:
+- Verified end-to-end network connectivity and listener responsiveness between both operating systems.
+- Executed SQL*Plus connection tests from Oracle Linux targeting the Windows database instance (orawindb), as well as remote connection tests from Windows to the primary Container Database (oradbcdb) and isolated Pluggable Databases (pdb1 and pdb2) on Oracle Linux.
 
 ![Linux-to-Windows](.png/linux_windows.png)
 **Figure 6:** Cross-Platform Connection from Oracle Linux to Windows Database Instance (orawindb)
@@ -120,6 +127,7 @@ All terminal commands, session outputs, and Data Pump migration transcripts for 
   The complete execution process and output logs are available in the [SQL*Loader Execution log](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase__4__sqlloader.log)
 
 ### 3.5 Phase 5: Automated Task Scheduling & Maintenance (1Z0-082)
-- Create custom database jobs using `DBMS_SCHEDULER` to automate optimizer statistics gathering (`DBMS_STATS`).
-- [ ] Configure automated maintenance windows and schedule log/purge routines.
-- [ ] Verify job execution logs and monitor status via `DBA_SCHEDULER_JOBS` views.
+◆Automated Task Scheduling & Optimizer Maintenance (DBMS_SCHEDULER):
+- Granted required administrative privileges (CREATE JOB) to local user pdb2_intern within container PDB2.
+- Developed a modular PL/SQL package (sales_maintenance_pkg) to execute concurrent DBMS_STATS optimizer statistics collection on SALES_DATA and aggregate full sales metrics into SALES_SUMMARY.
+- Created and decoupled scheduler objects—defining a stored procedure program (POPULATE_SALES_PROG), a weekly Monday calendar schedule (WEEK_BEGIN_SCH), and an active job (MAINTAIN_SALES_DATA_JOB). The [scheduler execution log](https://github.com/Mubarak-Monsuru/Oracle19c-Multitenant-Infrastructure-Project/blob/main/logs/phase_5_scheduler.log) is available.
