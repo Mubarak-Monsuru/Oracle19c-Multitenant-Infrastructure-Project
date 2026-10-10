@@ -1,0 +1,171 @@
+Script started on Sat 10 Oct 2026 07:18:31 PM WAT
+[root@pvm1 ~]# su - oracle
+Last login: Thu Oct  8 19:27:41 WAT 2026 on pts/0
+[oracle@pvm1 ~]$ ~/scripts/start_all.sh
+The Oracle base remains unchanged with value /u01/app/oracle
+Processing Database instance "oradbcdb": log file /u01/app/oracle/product/19.0.0/dbhome_1/rdbms/log/startup.log
+[oracle@pvm1 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Oct 10 19:21:18 2026
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> ALTER SESSION SET CONTAINER=PDB2;
+
+Session altered.
+
+SQL> SELECT username, account_status, default_tablespace 
+FROM dba_users 
+WHERE username = 'PDB2_INTERN';  2    3  
+
+USERNAME
+--------------------------------------------------------------------------------
+ACCOUNT_STATUS			 DEFAULT_TABLESPACE
+-------------------------------- ------------------------------
+PDB2_INTERN
+OPEN				 SLTBS
+
+
+SQL> SELECT owner, table_name, tablespace_name 
+FROM dba_tables 
+WHERE owner = 'PDB2_INTERN' 
+  AND table_name = 'SALES_DATA';  2    3    4  
+
+OWNER
+--------------------------------------------------------------------------------
+TABLE_NAME
+--------------------------------------------------------------------------------
+TABLESPACE_NAME
+------------------------------
+PDB2_INTERN
+SALES_DATA
+SLTBS
+
+
+SQL> GRANT CREATE PROCEDURE, CREATE JOB, MANAGE SCHEDULER TO pdb2_intern;
+
+Grant succeeded.
+
+SQL> conn pdb2_intern@pdb2
+Enter password: 
+Connected.
+SQL> CREATE TABLE SALES_SUMMARY (
+  CATEGORY        VARCHAR2(50),
+  TOTAL_SALES     NUMBER(12,2),
+  LAST_REFRESH    DATE
+);  2    3    4    5  
+
+Table created.
+
+SQL> CREATE OR REPLACE PACKAGE sales_maintenance_pkg AS
+  PROCEDURE refresh_sales_stats_proc;
+END sales_maintenance_pkg;
+/  2    3    4  
+
+Package created.
+
+SQL> CREATE OR REPLACE PACKAGE BODY sales_maintenance_pkg AS
+
+  PROCEDURE refresh_sales_stats_proc AS
+  2    3    4    BEGIN
+  5      DBMS_STATS.GATHER_TABLE_STATS(
+      ownname          => 'PDB2_INTERN',
+      tabname          => 'SALES_DATA',
+      estimate_percent => DBMS_STATS.AUTO_SAMPLE_SIZE
+    );
+  6    7    8    9   10  
+    DELETE FROM SALES_SUMMARY;
+    INSERT INTO SALES_SUMMARY (CATEGORY, TOTAL_SALES, LAST_REFRESH)
+    SELECT CATEGORY, SUM(QUANTITY * PRICE), SYSDATE
+    FROM SALES_DATA
+    GROUP BY CATEGORY;
+
+    COMMIT;
+  END refresh_sales_stats_proc;
+
+END sales_maintenance_pkg;
+/ 11   12   13   14   15   16   17   18   19   20   21  
+
+Package body created.
+
+SQL> BEGIN
+  DBMS_SCHEDULER.CREATE_PROGRAM(
+    program_name   => 'POPULATE_SALES_PROG',
+    program_action => 'PDB2_INTERN.SALES_MAINTENANCE_PKG.REFRESH_SALES_STATS_PROC',
+    program_type   => 'STORED_PROCEDURE',
+    enabled        => TRUE
+  );
+END;
+/  2    3    4    5    6    7    8    9  
+
+PL/SQL procedure successfully completed.
+
+SQL> BEGIN
+  2    DBMS_SCHEDULER.CREATE_SCHEDULE (
+    schedule_name   => 'WEEK_BEGIN_SCH',
+  3    4      start_date      => SYSTIMESTAMP,
+    end_date        => NULL,
+    repeat_interval => 'FREQ=WEEKLY; INTERVAL=1; BYDAY=MON',
+    comments        => 'A schedule that runs every week on Monday'
+  );
+END;
+/  5    6    7    8    9   10  
+
+PL/SQL procedure successfully completed.
+
+SQL> BEGIN
+  2    DBMS_SCHEDULER.CREATE_JOB (
+    job_name      => 'MAINTAIN_SALES_DATA_JOB',
+    program_name  => 'POPULATE_SALES_PROG',
+  3    4    5      schedule_name => 'WEEK_BEGIN_SCH',
+  6      enabled       => TRUE,
+    comments      => 'Weekly automated statistics gathering and sales summary aggregation job'
+  7    8    );
+  9  END;
+/ 10  
+
+PL/SQL procedure successfully completed.
+
+SQL> col STATE for a13
+SQL> col NEXT_RUN_DATE for a35
+SQL> SELECT ENABLED, STATE, RUN_COUNT, NEXT_RUN_DATE
+FROM USER_SCHEDULER_JOBS WHERE JOB_NAME='MAINTAIN_SALES_DATA_JOB';  2  
+
+ENABL STATE	     RUN_COUNT NEXT_RUN_DATE
+----- ------------- ---------- -----------------------------------
+TRUE  SCHEDULED 	     0 12-OCT-26 08.02.38.172033 PM +01:00
+
+SQL> exec DBMS_SCHEDULER.RUN_JOB('MAINTAIN_SALES_DATA_JOB')
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT * FROM SALES_SUMMARY;
+
+CATEGORY					   TOTAL_SALES LAST_REFR
+-------------------------------------------------- ----------- ---------
+Cosmetics					     6792862.9 10-OCT-26
+Books						      834552.9 10-OCT-26
+Clothing					     113996791 10-OCT-26
+Toys						    3980426.24 10-OCT-26
+Food & Beverage 				     849535.05 10-OCT-26
+Souvenir					     635824.65 10-OCT-26
+Shoes						    66553451.5 10-OCT-26
+Technology					      57862350 10-OCT-26
+
+8 rows selected.
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+[oracle@pvm1 ~]$ exit
+logout
+[root@pvm1 ~]# exit
+exit
+
+Script done on Sat 10 Oct 2026 08:07:59 PM WAT
